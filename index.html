@@ -10,24 +10,15 @@
     <meta http-equiv="refresh" content="1800">
 
     <style>
-        /* --- 1. STRUCTURE GÉNÉRALE VERROUILLÉE --- */
+        /* --- 1. STRUCTURE GÉNÉRALE --- */
         html, body {
             background-color: #000;
             color: #fff;
             font-family: -apple-system, Helvetica, Arial, sans-serif;
-            margin: 0; 
-            padding: 15px;
-            
-            /* C'EST ICI QUE LA MAGIE OPÈRE POUR BLOQUER LE SCROLL */
-            width: 100%;
-            height: 100%;
-            overflow: hidden; /* Interdit le dépassement */
-            box-sizing: border-box; /* Le padding est inclus dans les 100% */
-            position: fixed; /* Force l'écran à ne pas bouger sur vieux iOS */
-            
-            display: grid; 
-            grid-gap: 15px; /* Vieux iPad compatible */
-            
+            margin: 0; padding: 15px;
+            width: 100%; height: 100%;
+            overflow: hidden; box-sizing: border-box; position: fixed;
+            display: grid; grid-gap: 15px;
             grid-template-columns: 1fr 2fr; 
             grid-template-rows: 1fr 1fr 1fr;
             grid-template-areas:
@@ -36,26 +27,17 @@
                 "panel-left  panel-conso";
         }
 
-        /* --- 2. STYLE DES BOITES --- */
-        .card {
-            background-color: #1c1c1e; border-radius: 20px; padding: 20px;
-            display: flex; flex-direction: column; position: relative; overflow: hidden;
-        }
+        /* --- 2. BOITES --- */
+        .card { background-color: #1c1c1e; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; position: relative; overflow: hidden; }
 
-        /* --- 3. COLONNE GAUCHE (METEO) --- */
+        /* --- 3. GAUCHE (METEO) --- */
         .panel-left { grid-area: panel-left; }
 
-        /* HEURE */
-        .header-time { text-align: center; border-bottom: 1px solid #333; padding-bottom: 10px; margin-bottom: 5px; }
+        .header-time { text-align: center; border-bottom: 1px solid #333; padding-bottom: 10px; margin-bottom: 20px; }
         #clock { font-size: 50px; font-weight: bold; line-height: 1; letter-spacing: 2px;}
         #date { font-size: 16px; color: #aaa; margin-top: 5px; text-transform: capitalize;}
 
-        /* METEO ACTUELLE */
-        .weather-now-grid {
-            display: grid; grid-template-columns: 1fr 1fr; align-items: center;
-            padding: 15px; border-radius: 15px; margin-bottom: 10px;
-            grid-gap: 5px; 
-        }
+        .weather-now-grid { display: grid; grid-template-columns: 1fr 1fr; align-items: center; border-radius: 15px; margin-bottom: 20px; grid-gap: 5px; }
         .wn-icon { font-size: 50px; text-align: center; } 
         .wn-temp { font-size: 40px; font-weight: bold; text-align: center; color: #fff; }
         .wn-desc { font-size: 14px; color: #aaa; text-align: center; grid-column: 1; }
@@ -63,87 +45,71 @@
         .wn-details span { margin: 0 5px; }
         .rain-risk { color: #64d2ff; font-weight: bold; }
 
-        /* HEURES */
-        .next-hours { display: flex; justify-content: space-between; padding: 10px; border-radius: 15px; margin-bottom: 10px; }
+        .next-hours { display: flex; justify-content: space-between; border-radius: 15px; margin-bottom: 20px; }
         .hour-col { display: flex; flex-direction: column; align-items: center; font-size: 12px; }
         .hc-time { color: #aaa; margin-bottom: 5px; } .hc-icon { font-size: 18px; margin-bottom: 5px; } .hc-temp { font-weight: bold; }
 
-        /* SOLEIL */
-        .sun-cycle { padding: 15px; border-radius: 15px; margin-bottom: 10px; display: flex; flex-direction: column; }
+        .sun-cycle {border-radius: 15px; margin-bottom: 20px; display: flex; flex-direction: column; }
         .sun-cycle > div { margin-bottom: 5px; }
         .sun-times { display: flex; justify-content: space-between; font-size: 12px; color: #aaa; }
         .sun-bar-bg { width: 100%; height: 6px; background: #444; border-radius: 3px; position: relative; overflow: hidden; margin-top: 5px;}
         .sun-bar-fill { height: 100%; background: orange; width: 0%; transition: width 1s; }
 
-        /* JOURS */
+        /* JOURS SUIVANTS (MODIFIÉ) */
         .next-days { display: flex; flex-direction: column; flex: 1; }
         .day-row { 
-            display: flex; justify-content: space-between; align-items: center; font-size: 14px; 
-            border-bottom: 1px solid #333; padding: 8px 0; margin-bottom: 8px;
+            display: flex; justify-content: space-between; align-items: center; 
+            font-size: 14px; padding: 6px 0; margin-bottom: 4px; border-bottom: 1px solid #333;
         }
-        .dr-name { width: 40px; font-weight: bold; color: #ddd; text-transform: capitalize;}
-        .dr-date { font-size: 12px; color: #777; width: 30px;}
-        .dr-icon { font-size: 35px; width: 50px; text-align: center; }
-        .dr-temps { color: #aaa; font-size: 12px; display: flex; flex-direction: column; align-items: flex-end; min-width: 80px; }
-        .dr-temps > div { margin-bottom: 2px; }
-        .temp-line { display: flex; } .temp-line > span { margin-left: 8px; }
-        .temp-val { color: #fff; font-weight: bold; font-size: 14px; width: 30px; text-align: right;}
+        .dr-name { width: 60px; font-weight: bold; color: #ddd; text-transform: capitalize; display: flex} /* Nom du jour */
+        .dr-icon { font-size: 28px; width: 40px; text-align: center; }
+        
+        /* Bloc Températures aligné */
+        .dr-temps { 
+            display: flex; flex-direction: column; align-items: flex-end; 
+            min-width: 120px; /* Force une largeur pour aligner tout le bloc */
+        }
+        .temp-line { 
+            display: flex; justify-content: space-between; align-items: center; 
+            width: 100%; font-size: 12px; line-height: 1.4;
+        } 
+        .temp-line-content
+        {
+            display: flex; justify-content: flex-end; align-items: center; grid-gap: 10px;
+        }
+        .temp-label { 
+            color: #777; width: 40px; text-align: right; margin-right: 8px; font-size: 11px;
+        }
+        .t-min { color: #aaa; font-weight: normal; }
+        .t-max { color: #fff; font-weight: 800; font-size: 13px; } /* MAX EN GRAS */
 
-        /* --- 4. STYLE AGENDA --- */
-        .panel-agenda { 
-            grid-area: panel-agenda; 
-            background: #1c1c1e; border-radius: 20px; padding: 0; 
-            display: flex; 
-            overflow: hidden; 
-        }
-
-        /* Coté Gauche (Liste Events SCROLLABLE) */
-        .agenda-left {
-            width: 40%;
-            background-color: #2c2c2e;
-            padding: 20px;
-            display: flex; flex-direction: column;
-            border-right: 1px solid #333;
-            
-            /* On autorise le scroll ICI SEULEMENT */
-            overflow-y: auto; 
-            -webkit-overflow-scrolling: touch; /* Scroll fluide iOS */
-        }
+        /* --- 4. AGENDA --- */
+        .panel-agenda { grid-area: panel-agenda; background: #1c1c1e; border-radius: 20px; padding: 0; display: flex; overflow: hidden; }
+        .agenda-left { width: 40%; background-color: #2c2c2e; padding: 20px; display: flex; flex-direction: column; border-right: 1px solid #333; overflow-y: auto; -webkit-overflow-scrolling: touch; }
         .agenda-left > div { margin-bottom: 15px; }
-
         .agenda-title { font-size: 14px; color: #aaa; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; }
         .selected-date-display { font-size: 24px; font-weight: bold; margin-bottom: 10px; color: #fff; }
-        
-        .event-card {
-            background-color: #5e5ce6; color: white; padding: 15px; border-radius: 15px;
-            display: flex; flex-direction: column;
-        }
+        .event-card { background-color: #5e5ce6; color: white; padding: 15px; border-radius: 15px; display: flex; flex-direction: column; }
         .event-card > div { margin-bottom: 5px; }
         .event-time { font-size: 12px; opacity: 0.8; font-weight: bold; }
         .event-name { font-size: 16px; font-weight: bold; }
         .event-desc { font-size: 12px; opacity: 0.9; }
         .no-event { color: #777; font-style: italic; margin-top: 10px; }
 
-        /* Coté Droit (Calendrier) */
         .agenda-right { width: 60%; padding: 20px; display: flex; flex-direction: column; }
         .cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; font-size: 18px; font-weight: bold; text-transform: uppercase; color: #ddd; }
         .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); grid-gap: 5px; text-align: center; }
         .cal-day-name { font-size: 12px; color: #666; padding-bottom: 10px; }
-        .cal-day {
-            aspect-ratio: 1; display: flex; justify-content: center; align-items: center; border-radius: 50%;
-            font-size: 14px; cursor: pointer; transition: background 0.2s;
-        }
+        .cal-day { aspect-ratio: 1; display: flex; justify-content: center; align-items: center; border-radius: 50%; font-size: 14px; cursor: pointer; transition: background 0.2s; }
         .cal-day.today { border: 2px solid #5e5ce6; color: #fff; }
         .cal-day.active { background-color: #5e5ce6; color: #fff; border: none;}
         .cal-day.has-event::after { content: ''; position: absolute; bottom: 5px; width: 4px; height: 4px; background-color: #5e5ce6; border-radius: 50%; }
         .cal-day.empty { pointer-events: none; }
 
-
-        /* --- 5. AUTRES ZONES --- */
+        /* --- 5. AUTRES --- */
         .panel-tempo { grid-area: panel-tempo; background: #1c1c1e; border-radius: 20px; padding: 20px;}
         .panel-conso { grid-area: panel-conso; background: #1c1c1e; border-radius: 20px; padding: 20px;}
         h2 { margin: 0; color: #555; font-size: 14px; text-transform: uppercase; margin-bottom: 10px; }
-
     </style>
 </head>
 <body>
@@ -177,7 +143,6 @@
             </div>
             <div id="events-list-container"></div>
         </div>
-
         <div class="agenda-right">
             <div class="cal-header" id="cal-month-year">...</div>
             <div class="cal-grid"><div class="cal-day-name">L</div><div class="cal-day-name">M</div><div class="cal-day-name">M</div><div class="cal-day-name">J</div><div class="cal-day-name">V</div><div class="cal-day-name">S</div><div class="cal-day-name">D</div></div>
@@ -189,79 +154,45 @@
     <div class="panel-conso"><h2>Conso</h2><p style="color:#555;">(Zone vide)</p></div>
 
     <script>
-        // --- 0. ANTI-REBOND (Bloque le scroll sauf sur l'agenda) ---
-        // Ce script empêche de bouger la page globalement
-        document.body.addEventListener('touchmove', function(e) {
-            // Si on touche l'intérieur de la zone agenda-left, on autorise le scroll
-            if (e.target.closest('.agenda-left')) {
-                return; // On laisse faire
-            }
-            // Sinon, on bloque tout
-            e.preventDefault();
-        }, { passive: false });
-
-
-        // --- 1. HORLOGE ---
-        function updateClock() {
-            const now = new Date();
-            document.getElementById('clock').textContent = now.toLocaleTimeString('fr-FR', {hour: '2-digit', minute:'2-digit'});
-            document.getElementById('date').textContent = now.toLocaleDateString('fr-FR', {weekday: 'long', day: 'numeric', month: 'long'});
-        }
+        document.body.addEventListener('touchmove', function(e) { if (e.target.closest('.agenda-left')) { return; } e.preventDefault(); }, { passive: false });
+        function updateClock() { const now = new Date(); document.getElementById('clock').textContent = now.toLocaleTimeString('fr-FR', {hour: '2-digit', minute:'2-digit'}); document.getElementById('date').textContent = now.toLocaleDateString('fr-FR', {weekday: 'long', day: 'numeric', month: 'long'}); }
         setInterval(updateClock, 1000); updateClock();
 
-        // --- 2. AGENDA ---
-        const myEvents = {
-            "2025-12-26": [{ time: "14:00", title: "Réunion", desc: "Bureau" }, { time: "18:00", title: "Sport", desc: "Gym" }],
-            "2025-12-27": [{ time: "12:00", title: "Déjeuner", desc: "Pierre" }],
-            "2025-12-31": [{ time: "20:00", title: "Réveillon", desc: "Maison" }]
-        };
+        /* AGENDA */
+        const myEvents = { "2025-12-26": [{ time: "14:00", title: "Réunion", desc: "Bureau" }, { time: "18:00", title: "Sport", desc: "Gym" }], "2025-12-27": [{ time: "12:00", title: "Déjeuner", desc: "Pierre" }], "2025-12-31": [{ time: "20:00", title: "Réveillon", desc: "Maison" }] };
         let currentCalDate = new Date(); let selectedCalDate = new Date();
-
         function initCalendar() { renderCalendar(currentCalDate); showEventsForDate(selectedCalDate); }
         function renderCalendar(date) {
             const year = date.getFullYear(); const month = date.getMonth(); const today = new Date();
             const mNames = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"];
             document.getElementById('cal-month-year').textContent = mNames[month] + " " + year;
             const cDays = document.getElementById('cal-days-container'); cDays.innerHTML = "";
-            const fDay = new Date(year, month, 1).getDay(); 
-            let off = fDay === 0 ? 6 : fDay - 1;
-            const dInM = new Date(year, month + 1, 0).getDate();
+            const fDay = new Date(year, month, 1).getDay(); let off = fDay === 0 ? 6 : fDay - 1; const dInM = new Date(year, month + 1, 0).getDate();
             for (let i = 0; i < off; i++) cDays.innerHTML += `<div class="cal-day empty"></div>`;
             for (let i = 1; i <= dInM; i++) {
                 const el = document.createElement('div'); el.classList.add('cal-day'); el.textContent = i;
                 if (i===today.getDate() && month===today.getMonth() && year===today.getFullYear()) el.classList.add('today');
                 if (i===selectedCalDate.getDate() && month===selectedCalDate.getMonth() && year===selectedCalDate.getFullYear()) el.classList.add('active');
-                el.onclick = function() {
-                    document.querySelectorAll('.cal-day').forEach(d => d.classList.remove('active'));
-                    el.classList.add('active'); selectedCalDate = new Date(year, month, i); showEventsForDate(selectedCalDate);
-                };
+                el.onclick = function() { document.querySelectorAll('.cal-day').forEach(d => d.classList.remove('active')); el.classList.add('active'); selectedCalDate = new Date(year, month, i); showEventsForDate(selectedCalDate); };
                 cDays.appendChild(el);
             }
         }
         function showEventsForDate(date) {
-            const cont = document.getElementById('events-list-container'); cont.innerHTML = "";
-            const key = date.toISOString().split('T')[0];
+            const cont = document.getElementById('events-list-container'); cont.innerHTML = ""; const key = date.toISOString().split('T')[0];
             const dStr = date.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' });
             document.getElementById('selected-date-text').textContent = dStr.charAt(0).toUpperCase() + dStr.slice(1);
             const evs = myEvents[key];
-            if (evs && evs.length > 0) {
-                evs.forEach(evt => {
-                    cont.innerHTML += `<div class="event-card"><div class="event-time">${evt.time}</div><div class="event-name">${evt.title}</div><div class="event-desc">${evt.desc}</div></div>`;
-                });
-            } else { cont.innerHTML = `<div class="no-event">Rien prévu</div>`; }
+            if (evs && evs.length > 0) { evs.forEach(evt => { cont.innerHTML += `<div class="event-card"><div class="event-time">${evt.time}</div><div class="event-name">${evt.title}</div><div class="event-desc">${evt.desc}</div></div>`; }); } else { cont.innerHTML = `<div class="no-event">Rien prévu</div>`; }
         }
         initCalendar();
 
-        // --- 3. MÉTÉO ---
+        /* METEO */
         function fetchWeather() {
-            const url = "https://api.open-meteo.com/v1/forecast?latitude=47.20&longitude=-0.99&current=temperature_2m,is_day,precipitation,weather_code&hourly=temperature_2m,precipitation_probability,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,precipitation_probability_max&timezone=Europe%2FParis";
-            const xhr = new XMLHttpRequest(); xhr.open("GET", url);
-            xhr.onload = function() { if (xhr.status === 200) updateWeatherUI(JSON.parse(xhr.responseText)); }; xhr.send();
+            const url = "https://api.open-meteo.com/v1/forecast?latitude=47.20&longitude=-0.99&current=temperature_2m,is_day,precipitation,weather_code&hourly=temperature_2m,precipitation_probability,weather_code&daily=weather_code,sunrise,sunset,precipitation_probability_max&timezone=Europe%2FParis";
+            const xhr = new XMLHttpRequest(); xhr.open("GET", url); xhr.onload = function() { if (xhr.status === 200) updateWeatherUI(JSON.parse(xhr.responseText)); }; xhr.send();
         }
-        function getIcon(c, d) {
-            const i = { 0: "☀️", 1: "🌤", 2: "☁️", 3: "☁️", 45: "🌫", 51: "🌦", 61: "🌧", 71: "❄️", 95: "⚡️" };
-            let ic = i[c] || "❓"; if (!d && (c === 0 || c === 1)) ic = "🌙"; return ic;
-        }
+        function getIcon(c, d) { const i = { 0: "☀️", 1: "🌤", 2: "☁️", 3: "☁️", 45: "🌫", 51: "🌦", 61: "🌧", 71: "❄️", 95: "⚡️" }; let ic = i[c] || "❓"; if (!d && (c === 0 || c === 1)) ic = "🌙"; return ic; }
+
         function updateWeatherUI(data) {
             const c = data.current; const d = data.daily; const h = data.hourly;
             document.getElementById('curr-temp').textContent = Math.round(c.temperature_2m) + "°";
@@ -269,24 +200,55 @@
             document.getElementById('curr-desc').textContent = {0:"Ensoleillé", 1:"Variable", 2:"Nuageux", 3:"Couvert", 61:"Pluie"}[c.weather_code] || "Variable";
             document.getElementById('rain-risk').textContent = "💧 " + d.precipitation_probability_max[0] + "%";
             document.getElementById('moon-phase').textContent = "🌑 Lune";
+            
             const hCont = document.getElementById('hourly-container'); hCont.innerHTML = "";
             const curH = new Date().getHours();
             for(let i=0; i<5; i++) {
                 let idx = curH + i; if(idx>23) idx-=24;
                 hCont.innerHTML += `<div class="hour-col"><span class="hc-time">${idx}h</span><span class="hc-icon">${getIcon(h.weather_code[idx], 1)}</span><span class="hc-temp">${Math.round(h.temperature_2m[idx])}°</span></div>`;
             }
-            const sr = new Date(d.sunrise[0]); const ss = new Date(d.sunset[0]); const now = new Date();
-            const ft = (dt) => dt.toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit'});
+            const sr = new Date(d.sunrise[0]); const ss = new Date(d.sunset[0]); const now = new Date(); const ft = (dt) => dt.toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit'});
             document.getElementById('sunrise').textContent = "Lever " + ft(sr); document.getElementById('sunset').textContent = "Coucher " + ft(ss);
             let pct = 0; if (now > ss) pct = 100; else if (now > sr) { pct = ((now - sr) / (ss - sr)) * 100; }
             document.getElementById('sun-progress').style.width = pct + "%";
+
+            // JOURS SUIVANTS : Suppression point + Alignement
             const dCont = document.getElementById('daily-container'); dCont.innerHTML = "";
             for(let i=1; i<=5; i++) {
                 const dateObj = new Date(d.time[i]);
-                const dayName = dateObj.toLocaleDateString('fr-FR', {weekday:'short'});
+                // 1. Nom du jour SANS le point
+                let dayName = dateObj.toLocaleDateString('fr-FR', {weekday:'short'}).replace('.', '');
+                dayName = dayName.charAt(0).toUpperCase() + dayName.slice(1);
+                
                 const dateNum = dateObj.getDate();
                 const dIcon = getIcon(d.weather_code[i], 1);
-                dCont.innerHTML += `<div class="day-row"><span class="dr-name">${dayName}.</span><span class="dr-date">${dateNum}</span><span class="dr-icon">${dIcon}</span><div class="dr-temps"><div class="temp-line">Matin: <span class="temp-val">${Math.round(d.temperature_2m_min[i])}°</span></div><div class="temp-line">Aprem: <span class="temp-val">${Math.round(d.temperature_2m_max[i])}°</span></div></div></div>`;
+                
+                let start = i * 24;
+                let matT = [], apT = [];
+                for(let k=6; k<12; k++) matT.push(h.temperature_2m[start+k]);
+                for(let k=12; k<21; k++) apT.push(h.temperature_2m[start+k]);
+                let minM = Math.round(Math.min(...matT)), maxM = Math.round(Math.max(...matT));
+                let minA = Math.round(Math.min(...apT)), maxA = Math.round(Math.max(...apT));
+
+                dCont.innerHTML += `
+                <div class="day-row">
+                    <span class="dr-name">${dayName} ${dateNum}</span>
+                    <span class="dr-icon">${dIcon}</span>
+                    <div class="dr-temps">
+                        <div class="temp-line">
+                            <span class="temp-label">Matin :</span> 
+                            <div class="temp-line-content">
+                                <span class="t-min">${minM}°</span><span class="t-max">${maxM}°</span>
+                            </div>
+                        </div>
+                        <div class="temp-line">
+                            <span class="temp-label">Aprem :</span> 
+                            <div class="temp-line-content">
+                                <span class="t-min">${minA}°</span><span class="t-max">${maxA}°</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
             }
         }
         fetchWeather(); setInterval(fetchWeather, 1800000);
