@@ -55,29 +55,17 @@
         .sun-bar-bg { width: 100%; height: 6px; background: #444; border-radius: 3px; position: relative; overflow: hidden; margin-top: 5px;}
         .sun-bar-fill { height: 100%; background: orange; width: 0%; transition: width 1s; }
 
-        /* JOURS SUIVANTS (MODIFIÉ) */
+        /* JOURS SUIVANTS */
         .next-days { display: flex; flex-direction: column; flex: 1; }
-        .day-row { 
-            display: flex; justify-content: space-between; align-items: center; 
-            font-size: 14px; padding: 6px 0; margin-bottom: 4px; border-bottom: 1px solid #333;
-        }
-        .dr-name { width: 60px; font-weight: bold; color: #ddd; text-transform: capitalize; display: flex} /* Nom du jour */
+        .day-row { display: flex; justify-content: space-between; align-items: center; font-size: 14px; padding: 6px 0; margin-bottom: 4px; border-bottom: 1px solid #333;}
+        .dr-name { width: 60px; font-weight: bold; color: #ddd; text-transform: capitalize; display: flex}
         .dr-icon { font-size: 28px; width: 40px; text-align: center; }
-        
-        /* Bloc Températures aligné */
-        .dr-temps { 
-            display: flex; flex-direction: column; align-items: flex-end; 
-        }
-        .temp-line { 
-            display: flex; justify-content: space-between; align-items: center; 
-            width: 110px; font-size: 12px; line-height: 1.4;
-        } 
+        .dr-temps { display: flex; flex-direction: column; align-items: flex-end; }
+        .temp-line { display: flex; justify-content: space-between; align-items: center; width: 110px; font-size: 12px; line-height: 1.4;} 
         .temp-line-content { display: flex; justify-content: flex-end; align-items: center; }
-        .temp-label { 
-            color: #777; width: 50px; text-align: right; margin-right: 8px; font-size: 11px;
-        }
+        .temp-label { color: #777; width: 50px; text-align: right; margin-right: 8px; font-size: 11px;}
         .t-min { color: #aaa; font-weight: normal; padding-right: 10px;}
-        .t-max { color: #fff; font-weight: 800; font-size: 13px; } /* MAX EN GRAS */
+        .t-max { color: #fff; font-weight: 800; font-size: 13px; }
 
         /* --- 4. AGENDA --- */
         .panel-agenda { grid-area: panel-agenda; background: #1c1c1e; border-radius: 20px; padding: 0; display: flex; overflow: hidden; }
@@ -102,8 +90,37 @@
         .cal-day.has-event::after { content: ''; position: absolute; bottom: 5px; width: 4px; height: 4px; background-color: #5e5ce6; border-radius: 50%; }
         .cal-day.empty { pointer-events: none; }
 
-        /* --- 5. AUTRES --- */
-        .panel-tempo { grid-area: panel-tempo; background: #1c1c1e; border-radius: 20px; padding: 20px;}
+        /* --- 5. TEMPO CSS (NOUVEAU) --- */
+        .panel-tempo { grid-area: panel-tempo; background: #1c1c1e; border-radius: 20px; padding: 20px; display: flex; flex-direction: column;}
+        
+        .tempo-main { display: flex; justify-content: space-around; align-items: center; flex: 1; margin-bottom: 15px; }
+        .tempo-day-box { display: flex; flex-direction: column; align-items: center; }
+        .tempo-label { font-size: 12px; color: #aaa; text-transform: uppercase; margin-bottom: 8px; letter-spacing: 1px;}
+        
+        /* Cercle de couleur */
+        .tempo-circle { width: 60px; height: 60px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 24px; font-weight: bold; border: 4px solid #333; background: #222; box-shadow: 0 4px 10px rgba(0,0,0,0.5); transition: all 0.5s ease;}
+        
+        /* Couleurs Tempo */
+        .tempo-blue { background: radial-gradient(circle at 30% 30%, #007bff, #0056b3); border-color: #004494; color: white; text-shadow: 0 1px 2px rgba(0,0,0,0.5);}
+        .tempo-white { background: radial-gradient(circle at 30% 30%, #f8f9fa, #e9ecef); border-color: #ced4da; color: #333; }
+        .tempo-red { background: radial-gradient(circle at 30% 30%, #dc3545, #bd2130); border-color: #a71d2a; color: white; text-shadow: 0 1px 2px rgba(0,0,0,0.5);}
+        .tempo-unk { border: 2px dashed #555; color: #555; font-size: 10px; }
+
+        .tempo-text { font-size: 14px; font-weight: bold; margin-top: 8px; color: #fff; }
+
+        /* Jauges jours restants */
+        .tempo-stats { display: flex; justify-content: space-between; background: #2c2c2e; padding: 10px; border-radius: 12px; gap: 10px;}
+        .stat-col { flex: 1; display: flex; flex-direction: column; align-items: center; }
+        .stat-val { font-size: 14px; font-weight: bold; margin-bottom: 2px; }
+        .stat-total { font-size: 10px; color: #888; }
+        .progress-bg { width: 100%; height: 4px; background: #444; border-radius: 2px; margin-top: 5px; overflow: hidden;}
+        .progress-fill { height: 100%; border-radius: 2px; }
+        
+        .c-blue { color: #4da3ff; } .bg-blue { background-color: #4da3ff; }
+        .c-white { color: #fff; } .bg-white { background-color: #fff; }
+        .c-red { color: #ff5c6c; } .bg-red { background-color: #ff5c6c; }
+
+        /* --- 6. CONSO --- */
         .panel-conso { grid-area: panel-conso; background: #1c1c1e; border-radius: 20px; padding: 20px;}
         h2 { margin: 0; color: #555; font-size: 14px; text-transform: uppercase; margin-bottom: 10px; }
     </style>
@@ -146,13 +163,91 @@
         </div>
     </div>
 
-    <div class="panel-tempo"><h2>Tempo</h2><p style="color:#555;">(Zone vide)</p></div>
+    <div class="panel-tempo">
+        <div style="display:flex; justify-content: space-between; align-items:center;">
+            <h2>Option Tempo</h2>
+            <span style="font-size:10px; color:#555;">EDF</span>
+        </div>
+
+        <div class="tempo-main">
+            <div class="tempo-day-box">
+                <span class="tempo-label">Aujourd'hui</span>
+                <div id="tempo-today-circle" class="tempo-circle tempo-unk">?</div>
+                <span id="tempo-today-text" class="tempo-text">...</span>
+            </div>
+            <div class="tempo-day-box">
+                <span class="tempo-label">Demain (11h)</span>
+                <div id="tempo-tmrw-circle" class="tempo-circle tempo-unk">?</div>
+                <span id="tempo-tmrw-text" class="tempo-text">...</span>
+            </div>
+        </div>
+
+        <div class="tempo-stats">
+            <div class="stat-col">
+                <div class="stat-val c-blue">195</div>
+                <div class="stat-total">/300</div>
+                <div class="progress-bg"><div class="progress-fill bg-blue" style="width: 65%;"></div></div>
+            </div>
+            <div class="stat-col">
+                <div class="stat-val c-white">31</div>
+                <div class="stat-total">/43</div>
+                <div class="progress-bg"><div class="progress-fill bg-white" style="width: 72%;"></div></div>
+            </div>
+            <div class="stat-col">
+                <div class="stat-val c-red">22</div>
+                <div class="stat-total">/22</div>
+                <div class="progress-bg"><div class="progress-fill bg-red" style="width: 100%;"></div></div>
+            </div>
+        </div>
+    </div>
+
     <div class="panel-conso"><h2>Conso</h2><p style="color:#555;">(Zone vide)</p></div>
 
     <script>
         document.body.addEventListener('touchmove', function(e) { if (e.target.closest('.agenda-left')) { return; } e.preventDefault(); }, { passive: false });
         function updateClock() { const now = new Date(); document.getElementById('clock').textContent = now.toLocaleTimeString('fr-FR', {hour: '2-digit', minute:'2-digit'}); document.getElementById('date').textContent = now.toLocaleDateString('fr-FR', {weekday: 'long', day: 'numeric', month: 'long'}); }
         setInterval(updateClock, 1000); updateClock();
+
+        /* --- GESTION TEMPO EDF --- */
+        function fetchTempo() {
+            // Utilisation d'une API publique tierce car EDF bloque les requêtes directes via JS
+            const apiToday = "https://www.api-couleur-tempo.fr/api/jourTempo/today";
+            const apiTmrw = "https://www.api-couleur-tempo.fr/api/jourTempo/tomorrow";
+
+            Promise.all([fetch(apiToday), fetch(apiTmrw)])
+                .then(responses => Promise.all(responses.map(r => r.json())))
+                .then(data => {
+                    updateTempoUI(data[0], data[1]);
+                })
+                .catch(err => console.error("Erreur Tempo:", err));
+        }
+
+        function updateTempoUI(todayData, tomorrowData) {
+            // Code couleur API : 0: Inconnu, 1: Bleu, 2: Blanc, 3: Rouge
+            const colors = { 0: "unk", 1: "blue", 2: "white", 3: "red" };
+            const labels = { 0: "Indéfini", 1: "BLEU", 2: "BLANC", 3: "ROUGE" };
+
+            // Mise à jour Aujourd'hui
+            const tCode = todayData.codeJour;
+            const tEl = document.getElementById('tempo-today-circle');
+            tEl.className = `tempo-circle tempo-${colors[tCode]}`;
+            tEl.textContent = ""; // Vide le ?
+            document.getElementById('tempo-today-text').textContent = labels[tCode];
+            document.getElementById('tempo-today-text').style.color = (tCode === 2) ? "#fff" : (tCode === 1 ? "#4da3ff" : (tCode === 3 ? "#ff5c6c" : "#777"));
+
+            // Mise à jour Demain
+            const tmCode = tomorrowData.codeJour;
+            const tmEl = document.getElementById('tempo-tmrw-circle');
+            tmEl.className = `tempo-circle tempo-${colors[tmCode]}`;
+            tmEl.textContent = (tmCode === 0) ? "?" : "";
+            document.getElementById('tempo-tmrw-text').textContent = labels[tmCode];
+            document.getElementById('tempo-tmrw-text').style.color = (tmCode === 2) ? "#fff" : (tmCode === 1 ? "#4da3ff" : (tmCode === 3 ? "#ff5c6c" : "#777"));
+        }
+        
+        // Lancer Tempo au démarrage + toutes les heures
+        fetchTempo(); 
+        setInterval(fetchTempo, 3600000);
+
 
         /* AGENDA */
         const myEvents = { "2025-12-26": [{ time: "14:00", title: "Réunion", desc: "Bureau" }, { time: "18:00", title: "Sport", desc: "Gym" }], "2025-12-27": [{ time: "12:00", title: "Déjeuner", desc: "Pierre" }], "2025-12-31": [{ time: "20:00", title: "Réveillon", desc: "Maison" }] };
@@ -208,14 +303,12 @@
             let pct = 0; if (now > ss) pct = 100; else if (now > sr) { pct = ((now - sr) / (ss - sr)) * 100; }
             document.getElementById('sun-progress').style.width = pct + "%";
 
-            // JOURS SUIVANTS : Suppression point + Alignement
+            // JOURS SUIVANTS
             const dCont = document.getElementById('daily-container'); dCont.innerHTML = "";
             for(let i=1; i<=5; i++) {
                 const dateObj = new Date(d.time[i]);
-                // 1. Nom du jour SANS le point
                 let dayName = dateObj.toLocaleDateString('fr-FR', {weekday:'short'}).replace('.', '');
                 dayName = dayName.charAt(0).toUpperCase() + dayName.slice(1);
-                
                 const dateNum = dateObj.getDate();
                 const dIcon = getIcon(d.weather_code[i], 1);
                 
@@ -233,15 +326,11 @@
                     <div class="dr-temps">
                         <div class="temp-line">
                             <span class="temp-label">Matin :</span> 
-                            <div class="temp-line-content">
-                                <span class="t-min">${minM}°</span><span class="t-max">${maxM}°</span>
-                            </div>
+                            <div class="temp-line-content"><span class="t-min">${minM}°</span><span class="t-max">${maxM}°</span></div>
                         </div>
                         <div class="temp-line">
                             <span class="temp-label">Aprem :</span> 
-                            <div class="temp-line-content">
-                                <span class="t-min">${minA}°</span><span class="t-max">${maxA}°</span>
-                            </div>
+                            <div class="temp-line-content"><span class="t-min">${minA}°</span><span class="t-max">${maxA}°</span></div>
                         </div>
                     </div>
                 </div>`;
