@@ -18,7 +18,7 @@
             color: #fff;
             font-family: -apple-system, Helvetica, Arial, sans-serif;
             margin: 0; padding: 15px;
-            width: 100vw; height: 100vh;
+            width: 100%; height: 100%;
             overflow: hidden; box-sizing: border-box; position: fixed;
             
             /* FOND D'ECRAN PAYSAGE */
@@ -39,7 +39,7 @@
         /* --- 2. BOITES (EFFET VERRE LEGER) --- */
         .card { 
             background-color: rgba(28, 28, 30, 0.85); 
-            backdrop-filter: blur(5px); 
+            backdrop-filter: blur(20px); 
             -webkit-backdrop-filter: blur(20px);
             border-radius: 20px; 
             padding: 20px; 
@@ -105,7 +105,7 @@
         }
         .agenda-left > div { margin-bottom: 15px; }
         .agenda-title { font-size: 14px; color: #aaa; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; display: flex; justify-content: space-between;}
-        .config-btn { cursor: pointer; opacity: 0.3; font-size: 10px; }
+        .config-btn { cursor: pointer; opacity: 0.5; font-size: 12px; padding: 5px; }
         .selected-date-display { font-size: 18px; font-weight: bold; margin-bottom: 10px; color: #fff; }
         
         .event-card { background-color: #5e5ce6; color: white; padding: 15px; border-radius: 15px; display: flex; flex-direction: column; margin-bottom: 10px; }
@@ -166,8 +166,7 @@
         /* --- 6. RECETTE --- */
         .panel-conso { grid-area: panel-conso; padding: 0 !important; position: relative; cursor: grab; }
         .panel-conso:active { cursor: grabbing; }
-        
-        #recette-bg { width: 100%; height: 100%; background-size: contain; background-position: center; transition: opacity 0.5s; }
+        #recette-bg { width: 100%; height: 100%; background-size: cover; background-position: center; transition: opacity 0.5s; }
         .recette-overlay { position: absolute; bottom: 0; left: 0; width: 100%; background: linear-gradient(to top, rgba(0,0,0,0.9), transparent); padding: 20px; box-sizing: border-box; display: flex; flex-direction: column; justify-content: flex-end; height: 100%; pointer-events: none; }
         .recette-tag { background: rgba(255,165,0,0.9); color: white; align-self: flex-start; padding: 4px 8px; border-radius: 6px; font-size: 10px; font-weight: bold; text-transform: uppercase; margin-bottom: 5px; }
         .recette-title { font-size: 18px; font-weight: 700; line-height: 1.2; text-shadow: 0 2px 4px rgba(0,0,0,0.8); color: white; }
@@ -175,9 +174,10 @@
         /* Modal Input */
         #url-modal { position: absolute; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.8); z-index: 100; display: none; flex-direction: column; justify-content: center; align-items: center; }
         #url-modal.show { display: flex; }
-        .modal-box { background: #333; padding: 20px; border-radius: 15px; width: 80%; max-width: 400px; text-align: center;}
+        .modal-box { background: #333; padding: 20px; border-radius: 15px; width: 80%; max-width: 400px; text-align: center; position: relative;}
         .modal-input { width: 90%; padding: 10px; margin: 10px 0; border-radius: 5px; border: none; background: #111; color: white;}
         .modal-btn { background: #5e5ce6; color: white; border: none; padding: 10px 20px; border-radius: 10px; cursor: pointer; font-weight: bold;}
+        .modal-close { position: absolute; top: 10px; right: 15px; font-size: 20px; cursor: pointer; color: #888; }
 
     </style>
 </head>
@@ -185,6 +185,7 @@
 
     <div id="url-modal">
         <div class="modal-box">
+            <span class="modal-close" onclick="closeModal()">&times;</span>
             <h3>Configuration Calendrier</h3>
             <p style="font-size:12px; color:#aaa;">Collez le lien .ics</p>
             <input type="text" id="ics-input" class="modal-input" placeholder="https://...">
@@ -326,24 +327,13 @@
 
         /* --- 2. RECETTE (CHANGEMENT QUOTIDIEN + SWIPE) --- */
         const recipeBox = document.getElementById('recipe-box');
-        let touchStartX = 0;
-        let touchEndX = 0;
+        let touchStartX = 0; let touchEndX = 0;
 
-        // Ecouteurs Swipe
-        recipeBox.addEventListener('touchstart', e => {
-            touchStartX = e.changedTouches[0].screenX;
-        }, {passive: true});
-
-        recipeBox.addEventListener('touchend', e => {
-            touchEndX = e.changedTouches[0].screenX;
-            handleSwipe();
-        }, {passive: true});
+        recipeBox.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; }, {passive: true});
+        recipeBox.addEventListener('touchend', e => { touchEndX = e.changedTouches[0].screenX; handleSwipe(); }, {passive: true});
 
         function handleSwipe() {
-            // Si on glisse de plus de 50px
-            if (Math.abs(touchEndX - touchStartX) > 50) {
-                forceNewRecipe(); // Force le changement
-            }
+            if (Math.abs(touchEndX - touchStartX) > 50) { forceNewRecipe(); }
         }
 
         function loadDailyRecipe() {
@@ -359,7 +349,6 @@
         }
 
         function forceNewRecipe() {
-            // Animation visuelle légère (opacity)
             document.getElementById('recette-bg').style.opacity = '0.5';
             fetchRandomRecipe();
         }
@@ -374,7 +363,6 @@
                         cat: meal.strCategory,
                         title: meal.strMeal
                     };
-                    // Sauvegarde comme recette du jour (écrase l'ancienne)
                     localStorage.setItem('daily_recipe_date', new Date().toDateString());
                     localStorage.setItem('daily_recipe_data', JSON.stringify(recipeData));
                     
@@ -472,10 +460,8 @@
             const ft = (dt) => dt.toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit'});
             
             const moon = getMoonPhaseInfo(now);
-            // RESTAURATION : Affichage simple
             document.getElementById('cycle-moon-label').textContent = `${moon.icon} ${moon.label}`;
 
-            // RESTAURATION : Logique simple (Pas d'inversion Nuit)
             let totalDay = astros.todaySunset - astros.todaySunrise;
             let pct = 0;
             if (now > astros.todaySunset) pct = 100;
@@ -526,7 +512,17 @@
             if(input.length > 10) { localStorage.setItem('my_cal_url', input); checkCalendarUrl(); }
         }
         function resetUrl() {
-            if(confirm('Changer adresse calendrier ?')) { localStorage.removeItem('my_cal_url'); location.reload(); }
+            // Lecture de l'URL actuelle
+            const storedUrl = localStorage.getItem('my_cal_url');
+            // Pré-remplissage du champ
+            if (storedUrl) {
+                document.getElementById('ics-input').value = storedUrl;
+            }
+            // Affichage direct de la fenêtre (pas de confirm)
+            document.getElementById('url-modal').classList.add('show');
+        }
+        function closeModal() {
+            document.getElementById('url-modal').classList.remove('show');
         }
 
         let myEvents = {}; let displayedDate = new Date(); let selectedCalDate = new Date();
@@ -535,7 +531,7 @@
             const listContainer = document.getElementById('events-list-container');
             listContainer.innerHTML = '<div class="no-event">Chargement...</div>';
             
-            // PROXY FIABLE RESTAURÉ
+            // PROXY FIABLE
             const proxyUrl = 'https://corsproxy.io/?' + encodeURIComponent(url);
             
             fetch(proxyUrl, { cache: "no-store" })
