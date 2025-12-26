@@ -21,7 +21,7 @@
             width: 100%; height: 100%;
             overflow: hidden; box-sizing: border-box; position: fixed;
             
-            /* --- NOUVELLE GRILLE (LAYOUT) --- */
+            /* --- GRILLE --- */
             display: grid; 
             grid-gap: 15px;
             grid-template-columns: 1fr 1fr 1.4fr;
@@ -36,6 +36,8 @@
 
         .header-time { text-align: center; border-bottom: 1px solid #333; padding-bottom: 10px; margin-bottom: 20px; }
         #clock { font-size: 50px; font-weight: bold; line-height: 1; letter-spacing: 2px;}
+        
+        /* STYLE REFERENCE 1 : Date sous l'heure */
         #date { font-size: 16px; color: #aaa; margin-top: 5px; text-transform: capitalize;}
 
         /* METEO */
@@ -51,18 +53,13 @@
         .hour-col { display: flex; flex-direction: column; align-items: center; font-size: 12px; }
         .hc-time { color: #aaa; margin-bottom: 5px; } .hc-icon { font-size: 18px; margin-bottom: 5px; } .hc-temp { font-weight: bold; }
 
-        /* SOLEIL & LUNE CYCLE (BARRE INTELLIGENTE) */
+        /* SOLEIL & LUNE CYCLE */
         .sun-cycle {border-radius: 15px; margin-bottom: 20px; display: flex; flex-direction: column; }
-        
         .cycle-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
-        
-        /* Styles pour les titres Soleil et Lune qui s'allument/s'éteignent */
         #cycle-sun-label { font-size: 12px; font-weight: bold; text-transform: uppercase; transition: all 0.5s; }
         #cycle-moon-label { font-size: 12px; font-weight: bold; text-transform: capitalize; transition: all 0.5s; }
-        
         .sun-bar-bg { width: 100%; height: 6px; background: #333; border-radius: 3px; position: relative; overflow: hidden; margin-top: 5px; transition: background 0.5s;}
         .sun-bar-fill { height: 100%; background: orange; width: 0%; transition: width 1s ease-in-out, background 0.5s; border-radius: 3px;}
-        
         .sun-times { display: flex; justify-content: space-between; font-size: 11px; color: #aaa; margin-top: 5px;}
 
         .next-days { display: flex; flex-direction: column; flex: 1; }
@@ -80,9 +77,23 @@
         .panel-agenda { grid-area: panel-agenda; background: #1c1c1e; border-radius: 20px; padding: 0; display: flex; overflow: hidden; position: relative; }
         .agenda-left { width: 40%; background-color: #2c2c2e; padding: 20px; display: flex; flex-direction: column; border-right: 1px solid #333; overflow-y: auto; -webkit-overflow-scrolling: touch; }
         .agenda-left > div { margin-bottom: 15px; }
-        .agenda-title { font-size: 14px; color: #aaa; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; display: flex; justify-content: space-between;}
+        
+        /* MODIF 1 : Style harmonisé avec #date mais en UPPERCASE */
+        .agenda-title { 
+            font-size: 16px; 
+            color: #aaa; 
+            text-transform: uppercase; 
+            margin-bottom: 5px; 
+            display: flex; 
+            justify-content: space-between;
+            font-weight: normal; /* Comme #date */
+        }
+        
         .config-btn { cursor: pointer; opacity: 0.3; font-size: 10px; }
+        
+        /* STYLE REFERENCE 2 : Date Agenda sélectionnée */
         .selected-date-display { font-size: 18px; font-weight: bold; margin-bottom: 10px; color: #fff; }
+        
         .event-card { background-color: #5e5ce6; color: white; padding: 15px; border-radius: 15px; display: flex; flex-direction: column; margin-bottom: 10px; }
         .event-card > div { margin-bottom: 5px; }
         .event-time { font-size: 12px; opacity: 0.8; font-weight: bold; }
@@ -119,10 +130,21 @@
         /* TEMPO & CONSO */
         .panel-tempo { grid-area: panel-tempo; background: #1c1c1e; border-radius: 20px; padding: 20px; display: flex; flex-direction: column;}
         .tempo-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        
         .tempo-body-flex { display: flex; flex-direction: column; align-items: center; flex: 1; margin-bottom: 15px; width: 100%; justify-content: center; }
         .tempo-colors { display: flex; width: 100%; justify-content: space-around; align-items: center; margin-bottom: 20px; }
         .tempo-day-box { display: flex; flex-direction: column; align-items: center; }
-        .tempo-label { font-size: 12px; color: #aaa; text-transform: uppercase; margin-bottom: 8px; letter-spacing: 1px; font-weight: normal;}
+        
+        /* MODIF 2 : Style harmonisé avec "Vendredi 26..." (Blanc, Gras, Gros) */
+        .tempo-label { 
+            font-size: 16px; /* Adapté pour que ça rentre, style identique */
+            color: #fff;     
+            font-weight: bold; 
+            text-transform: uppercase; 
+            margin-bottom: 10px; 
+            letter-spacing: 0;
+        }
+        
         .tempo-circle { width: 60px; height: 60px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 24px; font-weight: bold; border: 3px solid #333; background: #222; box-shadow: 0 4px 10px rgba(0,0,0,0.5); transition: all 0.5s ease;}
         .tempo-blue { background: radial-gradient(circle at 30% 30%, #007bff, #0056b3); border-color: #004494; color: white; text-shadow: 0 1px 2px rgba(0,0,0,0.5);}
         .tempo-white { background: radial-gradient(circle at 30% 30%, #f8f9fa, #e9ecef); border-color: #ced4da; color: #333; }
@@ -130,14 +152,14 @@
         .tempo-unk { border: 2px dashed #555; color: #555; font-size: 10px; }
         .tempo-text { font-size: 14px; font-weight: bold; margin-top: 8px; color: #fff; }
         .tempo-status-list { display: flex; flex-direction: column; width: 100%;}
-        .status-item { padding: 8px 12px; border-radius: 20px; font-size: 12px; color: #666; background: #252527; border: 1px solid #333; transition: all 0.3s ease; display: flex; align-items: center; justify-content: space-between;}
+        .status-item { padding: 8px 12px; border-radius: 20px; font-size: 12px; color: #666; background: #252527; border: 1px solid #333; transition: all 0.3s ease; display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;}
         .status-item.active {border: none; color: #fff; font-weight: bold; box-shadow: 0 4px 12px rgba(0,0,0,0.3);}
         .active-hp { background-color: #ff453a !important; margin-bottom: 10px; }
         .active-hc { background-color: #30d158 !important; }
         .si-time { font-size: 10px; opacity: 0.8; top: 1px; padding-left: 5px; position: relative; }
         .tempo-stats { display: flex; flex-direction: column; justify-content: space-between; background: #2c2c2e; padding-top: 10px; border-radius: 12px;}
         .stat-col { flex: 1; display: flex; align-items: center; margin: 0 10px; margin-bottom: 10px; }
-        .stat-val { width: 60px; margin-right: 10px; font-size: 14px; font-weight: bold; display: flex; align-items: center; justify-content: center;}
+        .stat-val { width: 70px; margin-right: 10px; font-size: 14px; font-weight: bold; display: flex; align-items: center; }
         .stat-total { font-size: 10px; color: #888; position: relative; top: 1px; padding-left: 5px; }
         .progress-bg { width: 100%; height: 4px; background: #444; border-radius: 2px; margin-top: 5px; overflow: hidden;}
         .progress-fill { height: 100%; border-radius: 2px; }
@@ -145,7 +167,16 @@
         .c-white { color: #fff; } .bg-white { background-color: #fff; }
         .c-red { color: #ff5c6c; } .bg-red { background-color: #ff5c6c; }
         .panel-conso { grid-area: panel-conso; background: #1c1c1e; border-radius: 20px; padding: 20px;}
-        h2 { margin: 0; color: #555; font-size: 14px; text-transform: uppercase; margin-bottom: 5px; }
+        
+        /* MODIF 1 (Suite) : Style titre Option Tempo et Conso harmonisé */
+        h2 { 
+            margin: 0; 
+            color: #aaa; /* Gris clair comme #date */
+            font-size: 16px; /* Taille comme #date */
+            text-transform: uppercase; 
+            margin-bottom: 5px; 
+            font-weight: normal; 
+        }
     </style>
 </head>
 <body>
@@ -476,7 +507,6 @@
                 .catch(err => {
                     console.error("Erreur ICS:", err);
                     listContainer.innerHTML = `<div class="no-event" style="color:#ff453a;">Erreur chargement</div>`;
-                    // Affiche l'erreur en petit pour t'aider
                     listContainer.innerHTML += `<div class="debug-error" style="border:none; color:#666;">${err.message}</div>`;
                 });
         }
@@ -528,19 +558,18 @@
                 if (xhr.status === 200) { weatherCache = JSON.parse(xhr.responseText); renderWeatherFromCache(); }
             }; xhr.send();
         }
-        // ICONES METEO CORRIGEES (AVEC TOUS LES CODES)
         function getIcon(c, d) { 
             const i = { 
-                0: "☀️", 1: "🌤", 2: "☁️", 3: "☁️", // Clair / Nuageux
-                45: "🌫", 48: "🌫", // Brouillard
-                51: "🌦", 53: "🌦", 55: "🌦", // Bruine
-                56: "❄️", 57: "❄️", // Bruine verglaçante
-                61: "🌧", 63: "🌧", 65: "🌧", // Pluie
-                66: "❄️", 67: "❄️", // Pluie verglaçante
-                71: "❄️", 73: "❄️", 75: "❄️", 77: "❄️", // Neige
-                80: "🌦", 81: "🌧", 82: "🌧", // Averses de pluie
-                85: "❄️", 86: "❄️", // Averses de neige
-                95: "⚡️", 96: "⛈", 99: "⛈" // Orages
+                0: "☀️", 1: "🌤", 2: "☁️", 3: "☁️", 
+                45: "🌫", 48: "🌫", 
+                51: "🌦", 53: "🌦", 55: "🌦", 
+                56: "❄️", 57: "❄️", 
+                61: "🌧", 63: "🌧", 65: "🌧", 
+                66: "❄️", 67: "❄️", 
+                71: "❄️", 73: "❄️", 75: "❄️", 77: "❄️", 
+                80: "🌦", 81: "🌧", 82: "🌧", 
+                85: "❄️", 86: "❄️", 
+                95: "⚡️", 96: "⛈", 99: "⛈" 
             }; 
             let ic = i[c] || "❓"; 
             if (!d && (c === 0 || c === 1)) ic = "🌙"; 
@@ -564,7 +593,6 @@
                 hCont.innerHTML += `<div class="hour-col"><span class="hc-time">${idx}h</span><span class="hc-icon">${getIcon(h.weather_code[idx], 1)}</span><span class="hc-temp">${Math.round(h.temperature_2m[idx])}°</span></div>`;
             }
             
-            // SAUVEGARDE DES HEURES POUR GESTION CYCLE BARRE
             astros.todaySunrise = new Date(d.sunrise[0]); 
             astros.todaySunset = new Date(d.sunset[0]);
             if(d.sunrise[1]) {
