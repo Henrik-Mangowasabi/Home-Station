@@ -57,30 +57,21 @@
         #clock { font-size: 50px; font-weight: bold; line-height: 1; letter-spacing: 2px;}
         #date { font-size: 16px; color: #aaa; margin-top: 5px; text-transform: capitalize;}
 
-        /* BLOC MÉTÉO ACTUELLE (Votre demande précise) */
+        /* BLOC MÉTÉO ACTUELLE */
         .weather-now-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr; /* 2 colonnes */
+            grid-template-columns: 1fr 1fr;
             gap: 5px;
             align-items: center;
             padding: 15px;
             border-radius: 15px;
-            /* Icone Soleil à gauche */
             margin-bottom: 10px;
         }
         .wn-icon { font-size: 50px; text-align: center; } 
-        /* Température à droite */
         .wn-temp { font-size: 40px; font-weight: bold; text-align: center; color: #fff; }
-        /* Desc en dessous icone */
         .wn-desc { font-size: 14px; color: #aaa; text-align: center; grid-column: 1; }
-        /* Pluie & Lune en dessous Temp */
         .wn-details { 
-            grid-column: 2; 
-            display: flex; 
-            justify-content: center; 
-            gap: 10px; 
-            font-size: 12px; 
-            color: #888;
+            grid-column: 2; display: flex; justify-content: center; gap: 10px; font-size: 12px; color: #888;
         }
         .rain-risk { color: #64d2ff; font-weight: bold; }
 
@@ -93,34 +84,29 @@
             margin-bottom: 10px;
         }
         .hour-col {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            font-size: 12px;
+            display: flex; flex-direction: column; align-items: center; font-size: 12px;
         }
         .hc-time { color: #aaa; margin-bottom: 5px; }
         .hc-icon { font-size: 18px; margin-bottom: 5px; }
-        /* BLOC CYCLE SOLEIL */
         .hc-temp { font-weight: bold; }
 
+        /* BLOC CYCLE SOLEIL */
         .sun-cycle {
             padding: 15px;
             border-radius: 15px;
             margin-bottom: 10px;
-            grid-gap: 10px;
-            display: flex;
-            flex-direction: column;
-            /* Barre de progression du soleil */
+            display: flex; flex-direction: column; gap: 5px;
         }
         .sun-times { display: flex; justify-content: space-between; font-size: 12px; color: #aaa; }
-        .sun-bar-bg { width: 100%; height: 6px; background: #444; border-radius: 3px; position: relative; overflow: hidden; }
-        .sun-bar-fill { height: 100%; background: orange; width: 0%; transition: width 1s; } /* JS changera la largeur */
+        .sun-bar-bg { width: 100%; height: 6px; background: #444; border-radius: 3px; position: relative; overflow: hidden; margin-top: 5px;}
+        .sun-bar-fill { height: 100%; background: orange; width: 0%; transition: width 1s; }
 
         /* BLOC 5 PROCHAINS JOURS */
         .next-days {
             display: flex;
             flex-direction: column;
-            flex: 1; /* Prend l'espace restant */
+            flex: 1;
+            gap: 8px; /* Espace entre les jours */
         }
         .day-row {
             display: flex;
@@ -128,15 +114,31 @@
             align-items: center;
             font-size: 14px;
             border-bottom: 1px solid #333;
-            padding: 10px;
+            padding: 8px 0;
         }
-        .dr-name { width: 60px; font-weight: bold; color: #ddd; text-transform: capitalize;}
-        .dr-icon { height: 60px; text-align: center; }
-        .dr-temps { color: #aaa; font-size: 12px; display: flex; flex-direction: column; gap: 5px; margin: 0;}
-        .dr-temps-temperature { color: #aaa; font-size: 12px; margin: 0;}
-        .dr-temps span { color: #fff; font-weight: bold; font-size: 14px; margin-left: 5px;}
+        .dr-name { width: 40px; font-weight: bold; color: #ddd; text-transform: capitalize;}
+        .dr-date { font-size: 12px; color: #777; width: 30px;}
+        
+        /* --- MODIFICATION ICI : ICONE PLUS GRANDE --- */
+        .dr-icon { 
+            font-size: 35px; /* Agrandit l'icone */
+            width: 50px; 
+            text-align: center; 
+        }
 
-        /* --- 4. ZONES DE DROITE (Vides pour l'instant) --- */
+        .dr-temps { 
+            color: #aaa; 
+            font-size: 12px; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: flex-end;
+            gap: 2px;
+            min-width: 80px;
+        }
+        .temp-line { display: flex; gap: 8px; }
+        .temp-val { color: #fff; font-weight: bold; font-size: 14px; width: 30px; text-align: right;}
+
+        /* --- 4. ZONES DE DROITE --- */
         .panel-agenda { grid-area: panel-agenda; background: #1c1c1e; border-radius: 20px; padding: 20px;}
         .panel-tempo { grid-area: panel-tempo; background: #1c1c1e; border-radius: 20px; padding: 20px;}
         .panel-conso { grid-area: panel-conso; background: #1c1c1e; border-radius: 20px; padding: 20px;}
@@ -169,18 +171,20 @@
         </div>
 
         <div class="sun-cycle">
-            <span style="color:orange;">Soleil</span>
-            <div class="sun-times">
-                <span id="sunrise">--:--</span>
-                <span id="sunset">--:--</span>
+            <div style="display:flex; justify-content: space-between; align-items: center;">
+                <span style="color:orange; font-size: 12px; font-weight: bold;">SOLEIL</span>
             </div>
             <div class="sun-bar-bg">
                 <div class="sun-bar-fill" id="sun-progress"></div>
             </div>
+            <div class="sun-times">
+                <span id="sunrise">--:--</span>
+                <span id="sunset">--:--</span>
+            </div>
         </div>
 
         <div class="next-days" id="daily-container">
-            </div>
+        </div>
 
     </div>
 
@@ -215,9 +219,7 @@
         updateClock();
 
         // --- 2. GESTION MÉTÉO (Beaupréau-en-Mauges) ---
-        // Coordonnées : 47.20, -0.99
         function fetchWeather() {
-            // On utilise une API gratuite (Open-Meteo) sans clé
             const url = "https://api.open-meteo.com/v1/forecast?latitude=47.20&longitude=-0.99&current=temperature_2m,is_day,precipitation,weather_code&hourly=temperature_2m,precipitation_probability,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,precipitation_probability_max&timezone=Europe%2FParis";
 
             const xhr = new XMLHttpRequest();
@@ -231,58 +233,45 @@
             xhr.send();
         }
 
-        // CODES WMO (Pour transformer les codes 0, 1, 2... en Icones)
+        // CODES WMO
         function getWeatherIcon(code, isDay) {
             const icons = {
-                0: "☀️", 1: "🌤", 2: "☁️", 3: "☁️", // Clair / Nuageux
-                45: "🌫", 48: "🌫", // Brouillard
-                51: "🌦", 53: "🌧", 55: "🌧", // Bruine
-                61: "🌧", 63: "🌧", 65: "🌧", // Pluie
-                71: "❄️", 73: "❄️", 75: "❄️", // Neige
-                80: "🌦", 81: "🌧", 82: "⛈", // Averses
-                95: "⚡️", 96: "⛈", 99: "⛈"  // Orage
+                0: "☀️", 1: "🌤", 2: "☁️", 3: "☁️",
+                45: "🌫", 48: "🌫", 51: "🌦", 53: "🌧", 55: "🌧",
+                61: "🌧", 63: "🌧", 65: "🌧", 71: "❄️", 73: "❄️", 75: "❄️",
+                80: "🌦", 81: "🌧", 82: "⛈", 95: "⚡️", 96: "⛈", 99: "⛈"
             };
             let icon = icons[code] || "❓";
-            if (!isDay && (code === 0 || code === 1)) icon = "🌙"; // Lune si nuit claire
+            if (!isDay && (code === 0 || code === 1)) icon = "🌙";
             return icon;
         }
         const descs = { 0:"Ensoleillé", 1:"Peu nuageux", 2:"Nuageux", 3:"Couvert", 45:"Brouillard", 61:"Pluie", 80:"Averses", 95:"Orage" };
         
-        function getWeatherDesc(code) {
-            return descs[code] || "Variable";
-        }
+        function getWeatherDesc(code) { return descs[code] || "Variable"; }
 
         function updateWeatherUI(data) {
             const current = data.current;
             const daily = data.daily;
             const hourly = data.hourly;
 
-            // --- A. METEO ACTUELLE ---
+            // A. METEO ACTUELLE
             document.getElementById('curr-temp').textContent = Math.round(current.temperature_2m) + "°";
             document.getElementById('curr-icon').textContent = getWeatherIcon(current.weather_code, current.is_day);
             document.getElementById('curr-desc').textContent = getWeatherDesc(current.weather_code);
-            // Risque pluie (du jour ou de l'heure ?) On prend le max du jour pour être prudent
             document.getElementById('rain-risk').textContent = "💧 " + daily.precipitation_probability_max[0] + "%";
-            
-            // Phase Lunaire (Simulation simple basée sur la date car l'API complexe requiert du calcul)
-            // On affiche une icône lune simple pour le style demandé
             document.getElementById('moon-phase').textContent = getMoonPhase();
 
-            // --- B. 5 PROCHAINES HEURES ---
+            // B. 5 PROCHAINES HEURES
             const hContainer = document.getElementById('hourly-container');
-            hContainer.innerHTML = ""; // Vider
-            // On prend l'heure actuelle comme point de départ
+            hContainer.innerHTML = "";
             const currentHourIndex = new Date().getHours();
             
             for(let i = 0; i < 5; i++) {
-                // L'index dans le tableau hourly correspond souvent à l'heure (0 = minuit)
-                // Attention : l'API renvoie parfois 24h ou plus. On cible l'heure juste après.
                 let index = currentHourIndex + i; 
-                // Sécurité si on dépasse minuit
                 if(index > 23) index = index - 24; 
 
                 const hTemp = Math.round(hourly.temperature_2m[index]);
-                const hIcon = getWeatherIcon(hourly.weather_code[index], 1); // Force jour pour lisibilité
+                const hIcon = getWeatherIcon(hourly.weather_code[index], 1); 
                 const timeLabel = index + "h";
 
                 hContainer.innerHTML += `
@@ -291,19 +280,17 @@
                     <span class="hc-icon">${hIcon}</span>
                     <span class="hc-temp">${hTemp}°</span>
                 </div>`;
-                // --- C. CYCLE SOLEIL ---
             }
 
+            // C. CYCLE SOLEIL
             const sunrise = new Date(daily.sunrise[0]);
             const sunset = new Date(daily.sunset[0]);
             const now = new Date();
             
-            // Affichage Heures
             const formatTime = (date) => date.toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit'});
             document.getElementById('sunrise').textContent = "Lever " + formatTime(sunrise);
             document.getElementById('sunset').textContent = "Coucher " + formatTime(sunset);
 
-            // Barre de progression
             let percent = 0;
             if (now > sunset) percent = 100;
             else if (now < sunrise) percent = 0;
@@ -315,36 +302,35 @@
             document.getElementById('sun-progress').style.width = percent + "%";
 
 
-            // --- D. 5 PROCHAINS JOURS ---
+            // D. 5 PROCHAINS JOURS (MODIFIÉ POUR MATIN / APREM)
             const dContainer = document.getElementById('daily-container');
             dContainer.innerHTML = "";
             
-            for(let i = 1; i <= 5; i++) { // On commence à 1 pour "demain"
+            for(let i = 1; i <= 5; i++) {
                 const dateObj = new Date(daily.time[i]);
                 const dayName = dateObj.toLocaleDateString('fr-FR', {weekday:'short'});
                 const dateNum = dateObj.getDate();
                 
                 const dIcon = getWeatherIcon(daily.weather_code[i], 1);
+                // On considère Min = Matin et Max = Aprem
                 const minT = Math.round(daily.temperature_2m_min[i]);
                 const maxT = Math.round(daily.temperature_2m_max[i]);
 
                 dContainer.innerHTML += `
                 <div class="day-row">
-                    <span class="dr-name">${dayName} ${dateNum}</span>
+                    <span class="dr-name">${dayName}.</span>
+                    <span class="dr-date">${dateNum}</span>
+                    
                     <span class="dr-icon">${dIcon}</span>
+                    
                     <div class="dr-temps">
-                        <p class="dr-temps-temperature">
-                            ${minT}° <span>${maxT}°</span>
-                        </p>
-                        <p class="dr-temps-temperature">
-                            ${minT}° <span>${maxT}°</span>
-                        </p>
+                        <div class="temp-line">Matin: <span class="temp-val">${minT}°</span></div>
+                        <div class="temp-line">Aprem: <span class="temp-val">${maxT}°</span></div>
                     </div>
                 </div>`;
             }
         }
 
-        // Petite fonction pour simuler la phase lunaire (approximatif)
         function getMoonPhase() {
             const date = new Date();
             const daysSinceNew = (date.getTime() - new Date(2023, 0, 21).getTime()) / 86400000 % 29.53;
@@ -358,9 +344,7 @@
             return "🌘 Desc.";
         }
 
-        // Lancer la météo au démarrage
         fetchWeather();
-        // Relancer toutes les 30 min
         setInterval(fetchWeather, 1800000);
 
     </script>
