@@ -130,9 +130,9 @@
         .cal-day.today::before {
             content: '';
             position: absolute;
-            left: 50%; top: 50%;
+            left: 50%; top: 60%;
             transform: translate(-50%, -50%);
-            width: 40px; height: 40px;
+            width: 25px; height: 25px;
             border-radius: 50%;
             box-shadow: 0 0 0 2px #5e5ce6;
             pointer-events: none;
@@ -142,9 +142,9 @@
         .cal-day.active::before {
             content: '';
             position: absolute;
-            left: 50%; top: 50%;
+            left: 50%; top: 60%;
             transform: translate(-50%, -50%);
-            width: 40px; height: 40px;
+            width: 25px; height: 25px;
             border-radius: 50%;
             box-shadow: 0 0 0 2px #5e5ce6;
             pointer-events: none;
@@ -152,7 +152,7 @@
             z-index: -1;
             color: #fff;
         }
-        .cal-day.has-event::after { content: ''; position: absolute; bottom: 4px; width: 4px; height: 4px; background-color: #fff; border-radius: 50%; left: 50%; transform: translateX(-50%); }
+        .cal-day.has-event::after { content: ''; position: absolute; bottom: 1px; width: 4px; height: 4px; background-color: #fff; border-radius: 50%; left: 50%; transform: translateX(-50%); }
         .cal-day:not(.active).has-event::after { background-color: #5e5ce6; transform: translateX(-50%); }
         .cal-day.empty { pointer-events: none; }
 
