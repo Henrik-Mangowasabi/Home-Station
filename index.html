@@ -16,7 +16,7 @@
         html, body {
             background-color: #000;
             color: #fff;
-            font-family: -apple-system, Helvetica, Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             margin: 0; padding: 15px;
             width: 100%; height: 100%;
             overflow: hidden; box-sizing: border-box; position: fixed;
@@ -26,139 +26,144 @@
             background-position: center;
             transition: background-image 2s ease-in-out;
 
-            /* GRILLE */
+            /* GRILLE OPTIMISÉE IPAD */
             display: grid; 
             grid-gap: 15px;
-            grid-template-columns: 1fr 1fr 1.4fr;
-            grid-template-rows: 1fr 1.5fr;
+            grid-template-columns: 28% 34% 35%;
+            grid-template-rows: 1fr 1.3fr;
             grid-template-areas:
                 "panel-left  panel-agenda panel-agenda"
                 "panel-left  panel-tempo  panel-conso";
         }
 
-        /* --- 2. BOITES (EFFET VERRE LEGER) --- */
+        /* --- 2. BOITES (EFFET VERRE) --- */
         .card { 
-            background-color: rgba(28, 28, 30, 0.85); 
-            backdrop-filter: blur(20px); 
-            -webkit-backdrop-filter: blur(20px);
+            background-color: rgba(28, 28, 30, 0.85); /* Fond foncé pour lisibilité */
+            backdrop-filter: blur(5px); 
+            -webkit-backdrop-filter: blur(5px);
             border-radius: 20px; 
-            padding: 20px; 
+            padding: 15px; 
             display: flex; 
             flex-direction: column; 
             position: relative; 
             overflow: hidden; 
-            border: 1px solid rgba(255,255,255,0.1); 
+            border: 1px solid rgba(255,255,255,0.15); 
+            box-shadow: 0 8px 32px rgba(0,0,0,0.5);
         }
 
         /* --- 3. GAUCHE (METEO) --- */
         .panel-left { grid-area: panel-left; }
 
-        .header-time { text-align: center; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 10px; margin-bottom: 20px; }
-        #clock { font-size: 50px; font-weight: bold; line-height: 1; letter-spacing: 2px;}
-        #date { font-size: 16px; color: #aaa; margin-top: 5px; text-transform: capitalize;}
+        .header-time { text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px; margin-bottom: 15px; }
+        #clock { font-size: 55px; font-weight: 700; line-height: 1; letter-spacing: 1px; text-shadow: 0 2px 10px rgba(0,0,0,0.5);}
+        #date { font-size: 16px; color: #ddd; margin-top: 5px; text-transform: capitalize;}
 
-        .weather-now-grid { display: grid; grid-template-columns: 1fr 1fr; align-items: center; margin-bottom: 20px; grid-gap: 5px; }
-        .wn-icon { font-size: 50px; text-align: center; } 
-        .wn-temp { font-size: 40px; font-weight: bold; text-align: center; color: #fff; }
-        .wn-desc { font-size: 14px; color: #aaa; text-align: center; grid-column: 1; }
-        .wn-details { grid-column: 2; display: flex; justify-content: center; font-size: 12px; color: #888; }
-        .wn-details span { margin: 0 5px; }
+        .weather-now-grid { display: grid; grid-template-columns: 1fr 1fr; align-items: center; margin-bottom: 15px; grid-gap: 5px; }
+        .wn-icon { font-size: 50px; text-align: center; filter: drop-shadow(0 0 5px rgba(255,255,255,0.3));} 
+        .wn-temp { font-size: 45px; font-weight: bold; text-align: center; color: #fff; }
+        .wn-desc { font-size: 13px; color: #aaa; text-align: center; grid-column: 1; margin-top: -5px;}
+        .wn-details { grid-column: 2; display: flex; justify-content: center; font-size: 13px; color: #ddd; }
         .rain-risk { color: #64d2ff; font-weight: bold; }
 
-        .next-hours { display: flex; justify-content: space-between; margin-bottom: 20px; }
+        .next-hours { display: flex; justify-content: space-between; margin-bottom: 15px;}
         .hour-col { display: flex; flex-direction: column; align-items: center; font-size: 12px; }
-        .hc-time { color: #aaa; margin-bottom: 5px; } .hc-icon { font-size: 18px; margin-bottom: 5px; } .hc-temp { font-weight: bold; }
+        .hc-time { color: #aaa; margin-bottom: 4px; } .hc-icon { font-size: 18px; margin-bottom: 4px; } .hc-temp { font-weight: bold; }
 
-        /* CYCLE SOLEIL / LUNE */
-        .sun-cycle { margin-bottom: 20px; display: flex; flex-direction: column; }
+        /* CYCLE SOLEIL / LUNE (INTELLIGENT) */
+        .sun-cycle { margin-bottom: 15px; display: flex; flex-direction: column; }
         .cycle-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
-        #cycle-sun-label { font-size: 12px; font-weight: bold; text-transform: uppercase; color: orange;}
-        #cycle-moon-label { font-size: 12px; font-weight: bold; text-transform: capitalize; color: #aaa;} 
         
-        .sun-bar-bg { width: 100%; height: 6px; background: #444; border-radius: 3px; position: relative; overflow: hidden; margin-top: 5px;}
-        .sun-bar-fill { height: 100%; background: orange; width: 0%; border-radius: 3px;}
-        .sun-times { display: flex; justify-content: space-between; font-size: 11px; color: #aaa; margin-top: 5px;}
+        /* Titre qui change (Soleil ou Lune) */
+        #cycle-main-title { font-size: 12px; font-weight: bold; text-transform: uppercase; transition: color 0.5s; }
+        
+        .sun-bar-bg { width: 100%; height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; position: relative; overflow: hidden; margin-top: 5px; transition: background 0.5s;}
+        .sun-bar-fill { height: 100%; width: 0%; border-radius: 3px; transition: width 1s, background 0.5s;}
+        .sun-times { display: flex; justify-content: space-between; font-size: 11px; color: #aaa; margin-top: 4px;}
 
         /* LISTE JOURS */
-        .next-days { display: flex; flex-direction: column; flex: 1; }
-        .day-row { display: flex; justify-content: space-between; align-items: center; font-size: 14px; padding: 6px 0; margin-bottom: 4px; border-bottom: 1px solid rgba(255,255,255,0.1);}
-        .dr-name { width: 60px; font-weight: bold; color: #ddd; text-transform: capitalize; display: flex}
-        .dr-icon { font-size: 28px; width: 40px; text-align: center; }
-        .dr-temps { display: flex; flex-direction: column; align-items: flex-end; }
-        .temp-line { display: flex; justify-content: space-between; align-items: center; width: 110px; font-size: 12px; line-height: 1.4;} 
-        .temp-line-content { display: flex; justify-content: flex-end; align-items: center; }
-        .temp-label { color: #777; width: 50px; text-align: right; margin-right: 8px; font-size: 11px;}
-        .t-min { color: #aaa; font-weight: normal; padding-right: 10px;}
-        .t-max { color: #fff; font-weight: 800; font-size: 13px; }
+        .next-days { display: flex; flex-direction: column; flex: 1; justify-content: flex-end;}
+        .day-row { display: flex; justify-content: space-between; align-items: center; font-size: 13px; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.1);}
+        .day-row:last-child { border-bottom: none; }
+        .dr-name { width: 50px; font-weight: bold; color: #ddd; text-transform: capitalize; }
+        .dr-icon { font-size: 24px; width: 35px; text-align: center; }
+        
+        .dr-temps { display: flex; flex-direction: column; align-items: flex-end; width: 90px; }
+        .temp-line { display: flex; justify-content: space-between; width: 100%; font-size: 12px; }
+        .temp-label { color: #777; font-size: 10px; width: 40px; text-align: right; margin-right: 5px;}
+        .temp-vals { display: flex; justify-content: flex-end; width: 45px;}
+        .t-min { color: #aaa; font-weight: normal; margin-right: 8px;}
+        .t-max { color: #fff; font-weight: 800; }
 
         /* --- 4. AGENDA --- */
-        .panel-agenda { grid-area: panel-agenda; padding: 0; display: flex; flex-direction: row; } 
+        .panel-agenda { grid-area: panel-agenda; padding: 0; display: flex; flex-direction: row; }
         
         .agenda-left { 
-            width: 40%; 
-            background-color: rgba(44, 44, 46, 0.6); 
+            width: 38%; 
+            background-color: rgba(0, 0, 0, 0.3); 
             padding: 20px; 
             display: flex; 
             flex-direction: column; 
             border-right: 1px solid rgba(255,255,255,0.1); 
             overflow-y: auto; 
         }
-        .agenda-left > div { margin-bottom: 15px; }
         .agenda-title { font-size: 14px; color: #aaa; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; display: flex; justify-content: space-between;}
-        .config-btn { cursor: pointer; opacity: 0.5; font-size: 12px; padding: 5px; }
-        .selected-date-display { font-size: 18px; font-weight: bold; margin-bottom: 10px; color: #fff; }
+        .config-btn { cursor: pointer; opacity: 0.5; font-size: 12px; }
+        .selected-date-display { font-size: 18px; font-weight: bold; margin-bottom: 10px; color: #fff; text-transform: capitalize;}
         
-        .event-card { background-color: #5e5ce6; color: white; padding: 15px; border-radius: 15px; display: flex; flex-direction: column; margin-bottom: 10px; }
-        .event-card > div { margin-bottom: 5px; }
-        .event-time { font-size: 12px; opacity: 0.8; font-weight: bold; }
-        .event-name { font-size: 16px; font-weight: bold; }
-        .event-desc { font-size: 12px; opacity: 0.9; }
-        .no-event { color: #777; font-style: italic; margin-top: 10px; }
-        .debug-error { color: #ff453a; font-size: 11px; margin-top: 10px; border: 1px solid #ff453a; padding: 5px; border-radius: 5px; word-break: break-all;}
+        .event-card { background-color: rgba(94, 92, 230, 0.9); color: white; padding: 12px; border-radius: 12px; display: flex; flex-direction: column; margin-bottom: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.3); }
+        .event-time { font-size: 11px; opacity: 0.9; font-weight: bold; margin-bottom: 2px;}
+        .event-name { font-size: 14px; font-weight: bold; }
+        .event-desc { font-size: 11px; opacity: 0.9; margin-top: 2px;}
+        .no-event { color: #888; font-style: italic; margin-top: 10px; font-size: 13px;}
+        .debug-error { color: #ff453a; font-size: 10px; margin-top: 5px; border: 1px solid #ff453a; padding: 4px; border-radius: 4px;}
 
-        .agenda-right { width: 60%; padding: 20px; display: flex; flex-direction: column; }
-        .cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; font-size: 18px; font-weight: bold; text-transform: uppercase; color: #ddd; }
-        .nav-arrow { cursor: pointer; padding: 0 15px; color: #5e5ce6; user-select: none; font-size: 24px;}
-        .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); grid-gap: 5px; text-align: center; }
-        .cal-day-name { font-size: 12px; color: #666; padding-bottom: 10px; }
-        .cal-day { aspect-ratio: 1; display: flex; justify-content: center; align-items: center; border-radius: 50%; font-size: 14px; cursor: pointer; transition: background 0.2s; position: relative; }
-        .cal-day.today { border: 2px solid #5e5ce6; color: #fff; }
-        .cal-day.active { background-color: #5e5ce6; color: #fff; border: none;}
-        .cal-day.has-event::after { content: ''; position: absolute; bottom: 5px; width: 4px; height: 4px; background-color: #5e5ce6; border-radius: 50%; }
-        .cal-day.active.has-event::after { background-color: #fff; }
+        /* CALENDRIER */
+        .agenda-right { width: 62%; padding: 15px; display: flex; flex-direction: column; justify-content: flex-start;}
+        .cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: 16px; font-weight: bold; text-transform: uppercase; color: #ddd; }
+        .nav-arrow { cursor: pointer; padding: 0 15px; color: #5e5ce6; font-size: 24px; user-select: none;}
+        
+        .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); grid-gap: 3px; text-align: center; }
+        .cal-day-name { font-size: 10px; color: #888; padding-bottom: 4px; }
+        .cal-day { aspect-ratio: 1; display: flex; justify-content: center; align-items: center; border-radius: 50%; font-size: 13px; cursor: pointer; position: relative; transition: 0.2s;}
+        
+        .cal-day.today { border: 2px solid #5e5ce6; color: #fff; font-weight: bold;}
+        .cal-day.active { background-color: #5e5ce6; color: #fff; border: none; font-weight: bold;}
+        .cal-day.has-event::after { content: ''; position: absolute; bottom: 3px; width: 4px; height: 4px; background-color: #fff; border-radius: 50%; }
+        .cal-day:not(.active).has-event::after { background-color: #5e5ce6; }
         .cal-day.empty { pointer-events: none; }
 
-        /* --- 5. TEMPO --- */
+        /* --- 5. TEMPO (RESTAURÉ COMME AVANT) --- */
         .panel-tempo { grid-area: panel-tempo; }
         .tempo-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-        h2 { margin: 0; color: #555; font-size: 14px; text-transform: uppercase; margin-bottom: 5px; }
+        h2 { margin: 0; color: #777; font-size: 13px; text-transform: uppercase; margin-bottom: 5px; }
 
-        .tempo-body-flex { display: flex; flex-direction: column; align-items: center; flex: 1; margin-bottom: 15px; width: 100%; justify-content: center; }
-        .tempo-colors { display: flex; width: 100%; justify-content: space-around; align-items: center; margin-bottom: 20px; }
+        .tempo-body-flex { display: flex; flex-direction: column; align-items: center; flex: 1; margin-bottom: 10px; width: 100%; justify-content: center; }
+        .tempo-colors { display: flex; width: 100%; justify-content: space-around; align-items: center; margin-bottom: 15px; }
         .tempo-day-box { display: flex; flex-direction: column; align-items: center; }
         
-        .tempo-label { font-size: 12px; color: #aaa; text-transform: uppercase; margin-bottom: 8px; letter-spacing: 1px; font-weight: normal;}
+        .tempo-label { font-size: 10px; color: #aaa; text-transform: uppercase; margin-bottom: 6px; letter-spacing: 1px; font-weight: normal;}
         
-        .tempo-circle { width: 60px; height: 60px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 24px; font-weight: bold; border: 3px solid rgba(255,255,255,0.1); background: rgba(34,34,34,0.5); box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
+        .tempo-circle { width: 50px; height: 50px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 20px; font-weight: bold; border: 3px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.3); box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
         .tempo-blue { background: radial-gradient(circle at 30% 30%, #007bff, #0056b3); border-color: #004494; color: white; text-shadow: 0 1px 2px rgba(0,0,0,0.5);}
         .tempo-white { background: radial-gradient(circle at 30% 30%, #f8f9fa, #e9ecef); border-color: #ced4da; color: #333; }
         .tempo-red { background: radial-gradient(circle at 30% 30%, #dc3545, #bd2130); border-color: #a71d2a; color: white; text-shadow: 0 1px 2px rgba(0,0,0,0.5);}
         .tempo-unk { border: 2px dashed #555; color: #555; font-size: 10px; }
-        .tempo-text { font-size: 14px; font-weight: bold; margin-top: 8px; color: #fff; }
+        .tempo-text { font-size: 13px; font-weight: bold; margin-top: 5px; color: #fff; }
         
-        .tempo-status-list { display: flex; flex-direction: column; width: 100%;}
-        .status-item { padding: 8px 12px; border-radius: 20px; font-size: 12px; color: #666; background: rgba(37,37,39,0.6); border: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;}
-        .status-item.active {border: none; color: #fff; font-weight: bold; box-shadow: 0 4px 12px rgba(0,0,0,0.3);}
+        .tempo-status-list { display: flex; flex-direction: column; width: 100%; gap: 8px;}
+        .status-item { padding: 8px 12px; border-radius: 15px; font-size: 12px; color: #aaa; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: space-between; }
+        .status-item.active {border: none; color: #fff; font-weight: bold; box-shadow: 0 2px 10px rgba(0,0,0,0.3);}
         .active-hp { background-color: #ff453a !important; }
         .active-hc { background-color: #30d158 !important; }
         .si-time { font-size: 10px; opacity: 0.8; top: 1px; padding-left: 5px; position: relative; }
         
-        .tempo-stats { display: flex; flex-direction: column; justify-content: space-between; background: rgba(44,44,46,0.6); padding-top: 10px; border-radius: 12px;}
-        .stat-col { flex: 1; display: flex; align-items: center; margin: 0 10px; margin-bottom: 10px; }
-        .stat-val { width: 60px; margin-right: 10px; font-size: 14px; font-weight: bold; display: flex; align-items: center; justify-content: center;}
-        .stat-total { font-size: 10px; color: #888; position: relative; top: 1px; padding-left: 5px; }
-        .progress-bg { width: 100%; height: 4px; background: #444; border-radius: 2px; margin-top: 5px; overflow: hidden;}
-        .progress-fill { height: 100%; border-radius: 2px; }
+        /* JAUGES EPAISSES */
+        .tempo-stats { display: flex; flex-direction: column; justify-content: space-between; background: rgba(0,0,0,0.3); padding-top: 10px; border-radius: 12px; margin-top: 10px;}
+        .stat-col { flex: 1; display: flex; align-items: center; margin: 0 10px; margin-bottom: 8px; }
+        .stat-val { width: 60px; margin-right: 10px; font-size: 13px; font-weight: bold; display: flex; align-items: center; justify-content: center;}
+        .stat-total { font-size: 10px; color: #888; margin-left: 2px; }
+        .progress-bg { width: 100%; height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden;}
+        .progress-fill { height: 100%; border-radius: 4px;}
         .c-blue { color: #4da3ff; } .bg-blue { background-color: #4da3ff; }
         .c-white { color: #fff; } .bg-white { background-color: #fff; }
         .c-red { color: #ff5c6c; } .bg-red { background-color: #ff5c6c; }
@@ -174,7 +179,7 @@
         /* Modal Input */
         #url-modal { position: absolute; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.8); z-index: 100; display: none; flex-direction: column; justify-content: center; align-items: center; }
         #url-modal.show { display: flex; }
-        .modal-box { background: #333; padding: 20px; border-radius: 15px; width: 80%; max-width: 400px; text-align: center; position: relative;}
+        .modal-box { background: #333; padding: 20px; border-radius: 15px; width: 300px; text-align: center; position: relative; border: 1px solid #555;}
         .modal-input { width: 90%; padding: 10px; margin: 10px 0; border-radius: 5px; border: none; background: #111; color: white;}
         .modal-btn { background: #5e5ce6; color: white; border: none; padding: 10px 20px; border-radius: 10px; cursor: pointer; font-weight: bold;}
         .modal-close { position: absolute; top: 10px; right: 15px; font-size: 20px; cursor: pointer; color: #888; }
@@ -186,10 +191,9 @@
     <div id="url-modal">
         <div class="modal-box">
             <span class="modal-close" onclick="closeModal()">&times;</span>
-            <h3>Configuration Calendrier</h3>
-            <p style="font-size:12px; color:#aaa;">Collez le lien .ics</p>
-            <input type="text" id="ics-input" class="modal-input" placeholder="https://...">
-            <button class="modal-btn" onclick="saveUrl()">Sauvegarder</button>
+            <h3>Calendrier</h3>
+            <input type="text" id="ics-input" class="modal-input" placeholder="Lien .ics">
+            <button class="modal-btn" onclick="saveUrl()">OK</button>
         </div>
     </div>
 
@@ -210,8 +214,7 @@
         
         <div class="sun-cycle">
             <div class="cycle-header">
-                <span id="cycle-sun-label">SOLEIL</span>
-                <span id="cycle-moon-label">--</span>
+                <span id="cycle-main-title">SOLEIL</span>
             </div>
             <div class="sun-bar-bg"><div class="sun-bar-fill" id="sun-progress"></div></div>
             <div class="sun-times">
@@ -274,9 +277,9 @@
             </div>
         </div>
         <div class="tempo-stats">
-            <div class="stat-col"><div class="stat-val c-blue">195<div class="stat-total">/300</div></div><div class="progress-bg"><div class="progress-fill bg-blue" style="width: 65%;"></div></div></div>
-            <div class="stat-col"><div class="stat-val c-white">31 <div class="stat-total">/43</div></div><div class="progress-bg"><div class="progress-fill bg-white" style="width: 72%;"></div></div></div>
-            <div class="stat-col"><div class="stat-val c-red">22<div class="stat-total">/22</div></div><div class="progress-bg"><div class="progress-fill bg-red" style="width: 100%;"></div></div></div>
+            <div class="stat-col"><div class="stat-val c-blue">195<span class="stat-total">/300</span></div><div class="progress-bg"><div class="progress-fill bg-blue" style="width: 65%;"></div></div></div>
+            <div class="stat-col"><div class="stat-val c-white">31 <span class="stat-total">/43</span></div><div class="progress-bg"><div class="progress-fill bg-white" style="width: 72%;"></div></div></div>
+            <div class="stat-col"><div class="stat-val c-red">22<span class="stat-total">/22</span></div><div class="progress-bg"><div class="progress-fill bg-red" style="width: 100%;"></div></div></div>
         </div>
     </div>
 
@@ -293,7 +296,6 @@
         
         let weatherCache = null;
         let lastRenderedHour = -1;
-        
         let astros = { todaySunrise: null, todaySunset: null, tomorrowSunrise: null };
 
         function updateClock() { 
@@ -325,66 +327,41 @@
         }
         changeWallpaper(); setInterval(changeWallpaper, 900000);
 
-        /* --- 2. RECETTE (CHANGEMENT QUOTIDIEN + SWIPE) --- */
+        /* --- 2. RECETTE --- */
         const recipeBox = document.getElementById('recipe-box');
         let touchStartX = 0; let touchEndX = 0;
-
         recipeBox.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; }, {passive: true});
         recipeBox.addEventListener('touchend', e => { touchEndX = e.changedTouches[0].screenX; handleSwipe(); }, {passive: true});
-
-        function handleSwipe() {
-            if (Math.abs(touchEndX - touchStartX) > 50) { forceNewRecipe(); }
-        }
+        function handleSwipe() { if (Math.abs(touchEndX - touchStartX) > 50) { forceNewRecipe(); } }
 
         function loadDailyRecipe() {
             const today = new Date().toDateString();
             const stored = localStorage.getItem('daily_recipe_date');
             const storedData = localStorage.getItem('daily_recipe_data');
-
-            if (stored === today && storedData) {
-                displayRecipe(JSON.parse(storedData));
-            } else {
-                fetchRandomRecipe();
-            }
+            if (stored === today && storedData) displayRecipe(JSON.parse(storedData));
+            else fetchRandomRecipe();
         }
-
-        function forceNewRecipe() {
-            document.getElementById('recette-bg').style.opacity = '0.5';
-            fetchRandomRecipe();
-        }
-
+        function forceNewRecipe() { document.getElementById('recette-bg').style.opacity = '0.5'; fetchRandomRecipe(); }
         function fetchRandomRecipe() {
             fetch('https://www.themealdb.com/api/json/v1/1/random.php')
-                .then(r => r.json())
-                .then(data => {
+                .then(r => r.json()).then(data => {
                     const meal = data.meals[0];
-                    const recipeData = {
-                        img: meal.strMealThumb,
-                        cat: meal.strCategory,
-                        title: meal.strMeal
-                    };
+                    const recipeData = { img: meal.strMealThumb, cat: meal.strCategory, title: meal.strMeal };
                     localStorage.setItem('daily_recipe_date', new Date().toDateString());
                     localStorage.setItem('daily_recipe_data', JSON.stringify(recipeData));
-                    
                     displayRecipe(recipeData);
                     document.getElementById('recette-bg').style.opacity = '1';
-                })
-                .catch(console.error);
+                }).catch(console.error);
         }
-
         function displayRecipe(data) {
             const box = document.getElementById('recipe-box');
             const bg = document.getElementById('recette-bg');
             bg.style.backgroundImage = `url('${data.img}')`;
-            box.querySelector('.recette-overlay').innerHTML = `
-                <h2>Idée Recette</h2>
-                <span class="recette-tag">${data.cat}</span>
-                <div class="recette-title">${data.title}</div>
-            `;
+            box.querySelector('.recette-overlay').innerHTML = `<h2>Idée Recette</h2><span class="recette-tag">${data.cat}</span><div class="recette-title">${data.title}</div>`;
         }
         loadDailyRecipe(); setInterval(loadDailyRecipe, 3600000);
 
-        /* --- 3. METEO & LUNE --- */
+        /* --- 3. METEO --- */
         function getIcon(c, d) { 
             const i = { 0: "☀️", 1: "🌤", 2: "☁️", 3: "☁️", 45: "🌫", 48: "🌫", 51: "🌦", 53: "🌦", 55: "🌦", 56: "❄️", 57: "❄️", 61: "🌧", 63: "🌧", 65: "🌧", 66: "❄️", 67: "❄️", 71: "❄️", 73: "❄️", 75: "❄️", 77: "❄️", 80: "🌦", 81: "🌧", 82: "🌧", 85: "❄️", 86: "❄️", 95: "⚡️", 96: "⛈", 99: "⛈" }; 
             let ic = i[c] || "❓"; if (!d && (c === 0 || c === 1)) ic = "🌙"; return ic; 
@@ -416,6 +393,9 @@
             
             astros.todaySunrise = new Date(d.sunrise[0]); 
             astros.todaySunset = new Date(d.sunset[0]);
+            // Récupérer le lever de demain pour le cycle de nuit
+            if(d.sunrise[1]) astros.tomorrowSunrise = new Date(d.sunrise[1]);
+            else astros.tomorrowSunrise = new Date(astros.todaySunrise.getTime() + 24*3600*1000);
             
             updateSunCycle(new Date());
 
@@ -426,17 +406,17 @@
                 dayName = dayName.charAt(0).toUpperCase() + dayName.slice(1);
                 const dateNum = dateObj.getDate();
                 const dIcon = getIcon(d.weather_code[i], 1);
-                let start = i * 24; 
-                let matT = [], apT = [];
+                let start = i * 24; let matT = [], apT = [];
                 for(let k=6; k<12; k++) matT.push(h.temperature_2m[start+k]);
                 for(let k=12; k<21; k++) apT.push(h.temperature_2m[start+k]);
                 let minM = Math.round(Math.min(...matT)), maxM = Math.round(Math.max(...matT));
                 let minA = Math.round(Math.min(...apT)), maxA = Math.round(Math.max(...apT));
-                dCont.innerHTML += `<div class="day-row"><span class="dr-name">${dayName} ${dateNum}</span><span class="dr-icon">${dIcon}</span><div class="dr-temps"><div class="temp-line"><span class="temp-label">Matin :</span><div class="temp-line-content"><span class="t-min">${minM}°</span><span class="t-max">${maxM}°</span></div></div><div class="temp-line"><span class="temp-label">Aprem :</span><div class="temp-line-content"><span class="t-min">${minA}°</span><span class="t-max">${maxA}°</span></div></div></div></div>`;
+                // ALIGNEMENT TEMP RESTAURÉ
+                dCont.innerHTML += `<div class="day-row"><span class="dr-name">${dayName} ${dateNum}</span><span class="dr-icon">${dIcon}</span><div class="dr-temps"><div class="temp-line"><div class="temp-label">Matin :</div><div class="temp-vals"><span class="t-min">${minM}°</span><span class="t-max">${maxM}°</span></div></div><div class="temp-line"><div class="temp-label">Aprem :</div><div class="temp-vals"><span class="t-min">${minA}°</span><span class="t-max">${maxA}°</span></div></div></div></div>`;
             }
         }
 
-        // [CYCLE SOLEIL/LUNE RESTAURÉ]
+        // [CYCLE SOLEIL/LUNE INTELLIGENT RESTAURÉ]
         function getMoonPhaseInfo(date) {
             let year = date.getFullYear(), month = date.getMonth() + 1, day = date.getDate();
             if (month < 3) { year--; month += 12; }
@@ -454,22 +434,49 @@
         }
 
         function updateSunCycle(now) {
+            const titleEl = document.getElementById('cycle-main-title');
             const barFill = document.getElementById('sun-progress');
             const labelLeft = document.getElementById('label-left');
             const labelRight = document.getElementById('label-right');
             const ft = (dt) => dt.toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit'});
             
             const moon = getMoonPhaseInfo(now);
-            document.getElementById('cycle-moon-label').textContent = `${moon.icon} ${moon.label}`;
 
-            let totalDay = astros.todaySunset - astros.todaySunrise;
-            let pct = 0;
-            if (now > astros.todaySunset) pct = 100;
-            else if (now > astros.todaySunrise) pct = ((now - astros.todaySunrise) / totalDay) * 100;
-            
-            barFill.style.width = Math.max(0, Math.min(100, pct)) + "%";
-            labelLeft.textContent = "Lever " + ft(astros.todaySunrise);
-            labelRight.textContent = "Coucher " + ft(astros.todaySunset);
+            // LOGIQUE JOUR
+            if (now >= astros.todaySunrise && now <= astros.todaySunset) {
+                titleEl.textContent = "SOLEIL";
+                titleEl.style.color = "orange";
+                
+                barFill.style.background = "orange";
+                let totalDay = astros.todaySunset - astros.todaySunrise;
+                let pct = ((now - astros.todaySunrise) / totalDay) * 100;
+                barFill.style.width = Math.min(100, Math.max(0, pct)) + "%";
+
+                labelLeft.textContent = "Lever " + ft(astros.todaySunrise);
+                labelRight.textContent = "Coucher " + ft(astros.todaySunset);
+            } 
+            // LOGIQUE NUIT
+            else {
+                titleEl.textContent = `${moon.icon} ${moon.label}`;
+                titleEl.style.color = (moon.label.includes("Pleine")) ? "#ffd700" : "#fff"; 
+                
+                barFill.style.background = "#4a6fa5"; 
+
+                if (now > astros.todaySunset) {
+                    let totalNight = astros.tomorrowSunrise - astros.todaySunset;
+                    let pct = ((now - astros.todaySunset) / totalNight) * 100;
+                    barFill.style.width = Math.min(100, Math.max(0, pct)) + "%";
+                    labelLeft.textContent = "Coucher " + ft(astros.todaySunset);
+                    labelRight.textContent = "Lever " + ft(astros.tomorrowSunrise);
+                } else if (now < astros.todaySunrise) {
+                    let yesterdaySunset = new Date(astros.todaySunset.getTime() - (24*3600*1000));
+                    let totalNight = astros.todaySunrise - yesterdaySunset;
+                    let pct = ((now - yesterdaySunset) / totalNight) * 100;
+                    barFill.style.width = Math.min(100, Math.max(0, pct)) + "%";
+                    labelLeft.textContent = "Coucher " + ft(yesterdaySunset); 
+                    labelRight.textContent = "Lever " + ft(astros.todaySunrise);
+                }
+            }
         }
 
         // [TEMPO]
@@ -512,18 +519,11 @@
             if(input.length > 10) { localStorage.setItem('my_cal_url', input); checkCalendarUrl(); }
         }
         function resetUrl() {
-            // Lecture de l'URL actuelle
             const storedUrl = localStorage.getItem('my_cal_url');
-            // Pré-remplissage du champ
-            if (storedUrl) {
-                document.getElementById('ics-input').value = storedUrl;
-            }
-            // Affichage direct de la fenêtre (pas de confirm)
+            if (storedUrl) document.getElementById('ics-input').value = storedUrl;
             document.getElementById('url-modal').classList.add('show');
         }
-        function closeModal() {
-            document.getElementById('url-modal').classList.remove('show');
-        }
+        function closeModal() { document.getElementById('url-modal').classList.remove('show'); }
 
         let myEvents = {}; let displayedDate = new Date(); let selectedCalDate = new Date();
 
