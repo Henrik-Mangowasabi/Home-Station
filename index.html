@@ -90,23 +90,48 @@
         .cal-day.has-event::after { content: ''; position: absolute; bottom: 5px; width: 4px; height: 4px; background-color: #5e5ce6; border-radius: 50%; }
         .cal-day.empty { pointer-events: none; }
 
-        /* --- 5. TEMPO CSS (NOUVEAU) --- */
+        /* --- 5. TEMPO CSS (LAYOUT AJUSTÉ) --- */
         .panel-tempo { grid-area: panel-tempo; background: #1c1c1e; border-radius: 20px; padding: 20px; display: flex; flex-direction: column;}
         
-        .tempo-main { display: flex; justify-content: space-around; align-items: center; flex: 1; margin-bottom: 15px; }
+        .tempo-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+
+        /* Conteneur principal flexible */
+        .tempo-body-flex { display: flex; justify-content: space-between; align-items: center; flex: 1; margin-bottom: 15px; width: 100%; }
+        
+        /* GAUCHE : Zone large pour les cercles */
+        .tempo-colors { 
+            display: flex; 
+            flex: 1; /* PREND TOUTE LA PLACE DISPO */
+            justify-content: space-around; /* Espacement large comme avant */
+            align-items: center; 
+            margin-right: 15px; 
+        }
+        
         .tempo-day-box { display: flex; flex-direction: column; align-items: center; }
-        .tempo-label { font-size: 12px; color: #aaa; text-transform: uppercase; margin-bottom: 8px; letter-spacing: 1px;}
+        .tempo-label { font-size: 12px; color: #aaa; text-transform: uppercase; margin-bottom: 8px; letter-spacing: 1px; font-weight: normal;}
         
-        /* Cercle de couleur */
-        .tempo-circle { width: 60px; height: 60px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 24px; font-weight: bold; border: 4px solid #333; background: #222; box-shadow: 0 4px 10px rgba(0,0,0,0.5); transition: all 0.5s ease;}
+        .tempo-circle { width: 60px; height: 60px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 24px; font-weight: bold; border: 3px solid #333; background: #222; box-shadow: 0 4px 10px rgba(0,0,0,0.5); transition: all 0.5s ease;}
         
-        /* Couleurs Tempo */
         .tempo-blue { background: radial-gradient(circle at 30% 30%, #007bff, #0056b3); border-color: #004494; color: white; text-shadow: 0 1px 2px rgba(0,0,0,0.5);}
         .tempo-white { background: radial-gradient(circle at 30% 30%, #f8f9fa, #e9ecef); border-color: #ced4da; color: #333; }
         .tempo-red { background: radial-gradient(circle at 30% 30%, #dc3545, #bd2130); border-color: #a71d2a; color: white; text-shadow: 0 1px 2px rgba(0,0,0,0.5);}
         .tempo-unk { border: 2px dashed #555; color: #555; font-size: 10px; }
-
+        
         .tempo-text { font-size: 14px; font-weight: bold; margin-top: 8px; color: #fff; }
+
+        /* DROITE : Liste compacte pour les heures */
+        .tempo-status-list { display: flex; flex-direction: column; gap: 10px; min-width: 140px;}
+        .status-item { 
+            padding: 8px 12px; border-radius: 20px; font-size: 12px; color: #666; background: #252527; 
+            border: 1px solid #333; transition: all 0.3s ease; display: flex; align-items: center; justify-content: space-between;
+        }
+        .status-item.active { transform: scale(1.05); border: none; color: #fff; font-weight: bold; box-shadow: 0 4px 12px rgba(0,0,0,0.3);}
+        
+        /* Couleurs actives */
+        .active-hp { background-color: #ff453a !important; }
+        .active-hc { background-color: #30d158 !important; }
+
+        .si-time { font-size: 10px; opacity: 0.8; top: 1px; padding-left: 5px; position: relative; }
 
         /* Jauges jours restants */
         .tempo-stats { display: flex; justify-content: space-between; background: #2c2c2e; padding: 10px 0; border-radius: 12px;}
@@ -122,7 +147,7 @@
 
         /* --- 6. CONSO --- */
         .panel-conso { grid-area: panel-conso; background: #1c1c1e; border-radius: 20px; padding: 20px;}
-        h2 { margin: 0; color: #555; font-size: 14px; text-transform: uppercase; margin-bottom: 10px; }
+        h2 { margin: 0; color: #555; font-size: 14px; text-transform: uppercase; margin-bottom: 5px; }
     </style>
 </head>
 <body>
@@ -164,21 +189,34 @@
     </div>
 
     <div class="panel-tempo">
-        <div style="display:flex; justify-content: space-between; align-items:center;">
+        <div class="tempo-header">
             <h2>Option Tempo</h2>
             <span style="font-size:10px; color:#555;">EDF</span>
         </div>
 
-        <div class="tempo-main">
-            <div class="tempo-day-box">
-                <span class="tempo-label">Aujourd'hui</span>
-                <div id="tempo-today-circle" class="tempo-circle tempo-unk">?</div>
-                <span id="tempo-today-text" class="tempo-text">...</span>
+        <div class="tempo-body-flex">
+            <div class="tempo-colors">
+                <div class="tempo-day-box">
+                    <span class="tempo-label">AUJOURD'HUI</span>
+                    <div id="tempo-today-circle" class="tempo-circle tempo-unk">?</div>
+                    <span id="tempo-today-text" class="tempo-text">...</span>
+                </div>
+                <div class="tempo-day-box">
+                    <span class="tempo-label">DEMAIN (11h)</span>
+                    <div id="tempo-tmrw-circle" class="tempo-circle tempo-unk">?</div>
+                    <span id="tempo-tmrw-text" class="tempo-text">...</span>
+                </div>
             </div>
-            <div class="tempo-day-box">
-                <span class="tempo-label">Demain (11h)</span>
-                <div id="tempo-tmrw-circle" class="tempo-circle tempo-unk">?</div>
-                <span id="tempo-tmrw-text" class="tempo-text">...</span>
+
+            <div class="tempo-status-list">
+                <div id="badge-hp" class="status-item">
+                    <span>⚡ H. Pleines</span>
+                    <span class="si-time">06h - 22h</span>
+                </div>
+                <div id="badge-hc" class="status-item">
+                    <span>🌙 H. Creuses</span>
+                    <span class="si-time">22h - 06h</span>
+                </div>
             </div>
         </div>
 
@@ -202,37 +240,52 @@
 
     <script>
         document.body.addEventListener('touchmove', function(e) { if (e.target.closest('.agenda-left')) { return; } e.preventDefault(); }, { passive: false });
-        function updateClock() { const now = new Date(); document.getElementById('clock').textContent = now.toLocaleTimeString('fr-FR', {hour: '2-digit', minute:'2-digit'}); document.getElementById('date').textContent = now.toLocaleDateString('fr-FR', {weekday: 'long', day: 'numeric', month: 'long'}); }
+        
+        function updateClock() { 
+            const now = new Date(); 
+            document.getElementById('clock').textContent = now.toLocaleTimeString('fr-FR', {hour: '2-digit', minute:'2-digit'}); 
+            document.getElementById('date').textContent = now.toLocaleDateString('fr-FR', {weekday: 'long', day: 'numeric', month: 'long'}); 
+
+            updateTempoPeriod(now);
+        }
         setInterval(updateClock, 1000); updateClock();
 
-        /* --- GESTION TEMPO EDF --- */
+        function updateTempoPeriod(dateObj) {
+            const hour = dateObj.getHours();
+            const badgeHP = document.getElementById('badge-hp');
+            const badgeHC = document.getElementById('badge-hc');
+            
+            badgeHP.className = "status-item";
+            badgeHC.className = "status-item";
+
+            if (hour >= 6 && hour < 22) {
+                badgeHP.classList.add("active", "active-hp");
+            } else {
+                badgeHC.classList.add("active", "active-hc");
+            }
+        }
+
         function fetchTempo() {
-            // Utilisation d'une API publique tierce car EDF bloque les requêtes directes via JS
             const apiToday = "https://www.api-couleur-tempo.fr/api/jourTempo/today";
             const apiTmrw = "https://www.api-couleur-tempo.fr/api/jourTempo/tomorrow";
 
             Promise.all([fetch(apiToday), fetch(apiTmrw)])
                 .then(responses => Promise.all(responses.map(r => r.json())))
-                .then(data => {
-                    updateTempoUI(data[0], data[1]);
-                })
+                .then(data => { updateTempoUI(data[0], data[1]); })
                 .catch(err => console.error("Erreur Tempo:", err));
         }
 
         function updateTempoUI(todayData, tomorrowData) {
-            // Code couleur API : 0: Inconnu, 1: Bleu, 2: Blanc, 3: Rouge
             const colors = { 0: "unk", 1: "blue", 2: "white", 3: "red" };
             const labels = { 0: "Indéfini", 1: "BLEU", 2: "BLANC", 3: "ROUGE" };
 
-            // Mise à jour Aujourd'hui
             const tCode = todayData.codeJour;
             const tEl = document.getElementById('tempo-today-circle');
             tEl.className = `tempo-circle tempo-${colors[tCode]}`;
-            tEl.textContent = ""; // Vide le ?
+            tEl.textContent = ""; 
             document.getElementById('tempo-today-text').textContent = labels[tCode];
             document.getElementById('tempo-today-text').style.color = (tCode === 2) ? "#fff" : (tCode === 1 ? "#4da3ff" : (tCode === 3 ? "#ff5c6c" : "#777"));
 
-            // Mise à jour Demain
             const tmCode = tomorrowData.codeJour;
             const tmEl = document.getElementById('tempo-tmrw-circle');
             tmEl.className = `tempo-circle tempo-${colors[tmCode]}`;
@@ -241,12 +294,9 @@
             document.getElementById('tempo-tmrw-text').style.color = (tmCode === 2) ? "#fff" : (tmCode === 1 ? "#4da3ff" : (tmCode === 3 ? "#ff5c6c" : "#777"));
         }
         
-        // Lancer Tempo au démarrage + toutes les heures
-        fetchTempo(); 
-        setInterval(fetchTempo, 3600000);
+        fetchTempo(); setInterval(fetchTempo, 3600000);
 
-
-        /* AGENDA */
+        /* AGENDA & METEO (Même code que précédemment) */
         const myEvents = { "2025-12-26": [{ time: "14:00", title: "Réunion", desc: "Bureau" }, { time: "18:00", title: "Sport", desc: "Gym" }], "2025-12-27": [{ time: "12:00", title: "Déjeuner", desc: "Pierre" }], "2025-12-31": [{ time: "20:00", title: "Réveillon", desc: "Maison" }] };
         let currentCalDate = new Date(); let selectedCalDate = new Date();
         function initCalendar() { renderCalendar(currentCalDate); showEventsForDate(selectedCalDate); }
@@ -274,7 +324,6 @@
         }
         initCalendar();
 
-        /* METEO */
         function fetchWeather() {
             const url = "https://api.open-meteo.com/v1/forecast?latitude=47.20&longitude=-0.99&current=temperature_2m,is_day,precipitation,weather_code&hourly=temperature_2m,precipitation_probability,weather_code&daily=weather_code,sunrise,sunset,precipitation_probability_max&timezone=Europe%2FParis";
             const xhr = new XMLHttpRequest(); xhr.open("GET", url); xhr.onload = function() { if (xhr.status === 200) updateWeatherUI(JSON.parse(xhr.responseText)); }; xhr.send();
@@ -288,7 +337,6 @@
             document.getElementById('curr-desc').textContent = {0:"Ensoleillé", 1:"Variable", 2:"Nuageux", 3:"Couvert", 61:"Pluie"}[c.weather_code] || "Variable";
             document.getElementById('rain-risk').textContent = "💧 " + d.precipitation_probability_max[0] + "%";
             document.getElementById('moon-phase').textContent = "🌑 Lune";
-            
             const hCont = document.getElementById('hourly-container'); hCont.innerHTML = "";
             const curH = new Date().getHours();
             for(let i=0; i<5; i++) {
@@ -299,8 +347,6 @@
             document.getElementById('sunrise').textContent = "Lever " + ft(sr); document.getElementById('sunset').textContent = "Coucher " + ft(ss);
             let pct = 0; if (now > ss) pct = 100; else if (now > sr) { pct = ((now - sr) / (ss - sr)) * 100; }
             document.getElementById('sun-progress').style.width = pct + "%";
-
-            // JOURS SUIVANTS
             const dCont = document.getElementById('daily-container'); dCont.innerHTML = "";
             for(let i=1; i<=5; i++) {
                 const dateObj = new Date(d.time[i]);
@@ -308,29 +354,13 @@
                 dayName = dayName.charAt(0).toUpperCase() + dayName.slice(1);
                 const dateNum = dateObj.getDate();
                 const dIcon = getIcon(d.weather_code[i], 1);
-                
                 let start = i * 24;
                 let matT = [], apT = [];
                 for(let k=6; k<12; k++) matT.push(h.temperature_2m[start+k]);
                 for(let k=12; k<21; k++) apT.push(h.temperature_2m[start+k]);
                 let minM = Math.round(Math.min(...matT)), maxM = Math.round(Math.max(...matT));
                 let minA = Math.round(Math.min(...apT)), maxA = Math.round(Math.max(...apT));
-
-                dCont.innerHTML += `
-                <div class="day-row">
-                    <span class="dr-name">${dayName} ${dateNum}</span>
-                    <span class="dr-icon">${dIcon}</span>
-                    <div class="dr-temps">
-                        <div class="temp-line">
-                            <span class="temp-label">Matin :</span> 
-                            <div class="temp-line-content"><span class="t-min">${minM}°</span><span class="t-max">${maxM}°</span></div>
-                        </div>
-                        <div class="temp-line">
-                            <span class="temp-label">Aprem :</span> 
-                            <div class="temp-line-content"><span class="t-min">${minA}°</span><span class="t-max">${maxA}°</span></div>
-                        </div>
-                    </div>
-                </div>`;
+                dCont.innerHTML += `<div class="day-row"><span class="dr-name">${dayName} ${dateNum}</span><span class="dr-icon">${dIcon}</span><div class="dr-temps"><div class="temp-line"><span class="temp-label">Matin :</span><div class="temp-line-content"><span class="t-min">${minM}°</span><span class="t-max">${maxM}°</span></div></div><div class="temp-line"><span class="temp-label">Aprem :</span><div class="temp-line-content"><span class="t-min">${minA}°</span><span class="t-max">${maxA}°</span></div></div></div></div>`;
             }
         }
         fetchWeather(); setInterval(fetchWeather, 1800000);
