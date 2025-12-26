@@ -54,10 +54,11 @@
         /* --- 3. GAUCHE (METEO) --- */
         .panel-left { grid-area: panel-left; }
 
-        .header-time { text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px; margin-bottom: 15px; }
+        .header-time { text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px; margin-bottom: 20px; }
         #clock { font-size: 55px; font-weight: 700; line-height: 1; letter-spacing: 1px; text-shadow: 0 2px 10px rgba(0,0,0,0.5);}
-        #date { font-size: 16px; color: #ddd; margin-top: 5px; text-transform: capitalize;}
+        #date { font-size: 16px; color: #ddd; margin-top: 10px; text-transform: capitalize;}
 
+        .weather-container { display: flex; flex-direction: column; justify-content: space-between; flex: 1; }
         .weather-now-grid { display: grid; grid-template-columns: 1fr 1fr; align-items: center; margin-bottom: 15px; grid-gap: 5px; }
         .wn-icon { font-size: 50px; text-align: center; filter: drop-shadow(0 0 5px rgba(255,255,255,0.3));} 
         .wn-temp { font-size: 45px; font-weight: bold; text-align: center; color: #fff; }
@@ -81,7 +82,7 @@
         .sun-times { display: flex; justify-content: space-between; font-size: 11px; color: #aaa; margin-top: 4px;}
 
         /* LISTE JOURS */
-        .next-days { display: flex; flex-direction: column; flex: 1; justify-content: flex-end;}
+        .next-days { display: flex; flex-direction: column; justify-content: flex-end;}
         .day-row { display: flex; justify-content: space-between; align-items: center; font-size: 13px; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.1);}
         .day-row:last-child { border-bottom: none; }
         .dr-name { width: 50px; font-weight: bold; color: #ddd; text-transform: capitalize; }
@@ -132,7 +133,7 @@
             position: absolute;
             left: 50%; top: 60%;
             transform: translate(-50%, -50%);
-            width: 25px; height: 25px;
+            width: 30px; height: 30px;
             border-radius: 50%;
             box-shadow: 0 0 0 2px #5e5ce6;
             pointer-events: none;
@@ -144,7 +145,7 @@
             position: absolute;
             left: 50%; top: 60%;
             transform: translate(-50%, -50%);
-            width: 25px; height: 25px;
+            width: 30px; height: 30px;
             border-radius: 50%;
             box-shadow: 0 0 0 2px #5e5ce6;
             pointer-events: none;
@@ -158,10 +159,10 @@
 
         /* --- 5. TEMPO (RESTAURÉ COMME AVANT) --- */
         .panel-tempo { grid-area: panel-tempo; }
-        .tempo-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .tempo-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         .tempo-header { margin: 0; color:#ddd; font-size: 16px; text-transform: uppercase; margin-bottom: 5px; letter-spacing: 1px;}
 
-        .tempo-body-flex { display: flex; flex-direction: column; align-items: center; flex: 1; width: 100%; justify-content: center; }
+        .tempo-body-flex { display: flex; flex-direction: column; align-items: center; flex: 1; width: 100%; justify-content: space-between; }
         .tempo-colors { display: flex; width: 100%; justify-content: space-around; align-items: center; margin-bottom: 15px; }
         .tempo-day-box { display: flex; flex-direction: column; align-items: center; }
         
@@ -182,7 +183,7 @@
         .si-time { font-size: 10px; opacity: 0.8; top: 1px; padding-left: 5px; position: relative; }
         
         /* JAUGES EPAISSES */
-        .tempo-stats { display: flex; flex-direction: column; justify-content: space-between; background: rgba(0,0,0,0.3); padding-top: 10px; border-radius: 12px; margin-top: 10px;}
+        .tempo-stats { display: flex; flex-direction: column; justify-content: space-between; background: rgba(0,0,0,0.3); padding-top: 10px; border-radius: 12px; margin-top: 10px; width: 100%;}
         .stat-col { flex: 1; display: flex; align-items: center; margin: 0 10px; margin-bottom: 8px; }
         .stat-val { width: 70px; margin-right: 10px; font-size: 13px; font-weight: bold; display: flex; align-items: center;}
         .stat-total { font-size: 10px; color: #888; margin-left: 2px; }
@@ -226,28 +227,30 @@
             <div id="clock">--:--</div>
             <div id="date">Chargement...</div>
         </div>
-        
-        <div class="weather-now-grid">
-            <div class="wn-icon" id="curr-icon"></div>
-            <div class="wn-temp" id="curr-temp">--°</div>
-            <div class="wn-desc" id="curr-desc">...</div>
-            <div class="wn-details"><span id="rain-risk" class="rain-risk">💧 --%</span></div>
+        <div class="weather-container">
+            <div class="weather-now-grid">
+                <div class="wn-icon" id="curr-icon"></div>
+                <div class="wn-temp" id="curr-temp">--°</div>
+                <div class="wn-desc" id="curr-desc">...</div>
+                <div class="wn-details"><span id="rain-risk" class="rain-risk">💧 --%</span></div>
+            </div>
+            
+            <div class="next-hours" id="hourly-container"></div>
+            
+            <div class="sun-cycle">
+                <div class="cycle-header">
+                    <span id="cycle-main-title">SOLEIL</span>
+                </div>
+                <div class="sun-bar-bg"><div class="sun-bar-fill" id="sun-progress"></div></div>
+                <div class="sun-times">
+                    <span id="label-left">--:--</span>
+                    <span id="label-right">--:--</span>
+                </div>
+            </div>
+            
+            <div class="next-days" id="daily-container"></div>
         </div>
         
-        <div class="next-hours" id="hourly-container"></div>
-        
-        <div class="sun-cycle">
-            <div class="cycle-header">
-                <span id="cycle-main-title">SOLEIL</span>
-            </div>
-            <div class="sun-bar-bg"><div class="sun-bar-fill" id="sun-progress"></div></div>
-            <div class="sun-times">
-                <span id="label-left">--:--</span>
-                <span id="label-right">--:--</span>
-            </div>
-        </div>
-        
-        <div class="next-days" id="daily-container"></div>
     </div>
 
     <div class="card panel-agenda">
@@ -299,11 +302,11 @@
                     <span class="si-time">22h - 06h</span>
                 </div>
             </div>
-        </div>
-        <div class="tempo-stats">
-            <div class="stat-col"><div class="stat-val c-blue">195<span class="stat-total">/300</span></div><div class="progress-bg"><div class="progress-fill bg-blue" style="width: 65%;"></div></div></div>
-            <div class="stat-col"><div class="stat-val c-white">31 <span class="stat-total">/43</span></div><div class="progress-bg"><div class="progress-fill bg-white" style="width: 72%;"></div></div></div>
-            <div class="stat-col"><div class="stat-val c-red">22<span class="stat-total">/22</span></div><div class="progress-bg"><div class="progress-fill bg-red" style="width: 100%;"></div></div></div>
+            <div class="tempo-stats">
+                <div class="stat-col"><div class="stat-val c-blue">195<span class="stat-total">/300</span></div><div class="progress-bg"><div class="progress-fill bg-blue" style="width: 65%;"></div></div></div>
+                <div class="stat-col"><div class="stat-val c-white">31 <span class="stat-total">/43</span></div><div class="progress-bg"><div class="progress-fill bg-white" style="width: 72%;"></div></div></div>
+                <div class="stat-col"><div class="stat-val c-red">22<span class="stat-total">/22</span></div><div class="progress-bg"><div class="progress-fill bg-red" style="width: 100%;"></div></div></div>
+            </div>
         </div>
     </div>
 
