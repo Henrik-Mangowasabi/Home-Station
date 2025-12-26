@@ -49,11 +49,19 @@
         .hour-col { display: flex; flex-direction: column; align-items: center; font-size: 12px; }
         .hc-time { color: #aaa; margin-bottom: 5px; } .hc-icon { font-size: 18px; margin-bottom: 5px; } .hc-temp { font-weight: bold; }
 
+        /* SOLEIL & LUNE CYCLE (BARRE INTELLIGENTE) */
         .sun-cycle {border-radius: 15px; margin-bottom: 20px; display: flex; flex-direction: column; }
-        .sun-cycle > div { margin-bottom: 5px; }
-        .sun-times { display: flex; justify-content: space-between; font-size: 12px; color: #aaa; }
-        .sun-bar-bg { width: 100%; height: 6px; background: #444; border-radius: 3px; position: relative; overflow: hidden; margin-top: 5px;}
-        .sun-bar-fill { height: 100%; background: orange; width: 0%; transition: width 1s; }
+        
+        .cycle-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
+        
+        /* Styles pour les titres Soleil et Lune qui s'allument/s'éteignent */
+        #cycle-sun-label { font-size: 12px; font-weight: bold; text-transform: uppercase; transition: all 0.5s; }
+        #cycle-moon-label { font-size: 12px; font-weight: bold; text-transform: capitalize; transition: all 0.5s; }
+        
+        .sun-bar-bg { width: 100%; height: 6px; background: #333; border-radius: 3px; position: relative; overflow: hidden; margin-top: 5px; transition: background 0.5s;}
+        .sun-bar-fill { height: 100%; background: orange; width: 0%; transition: width 1s ease-in-out, background 0.5s; border-radius: 3px;}
+        
+        .sun-times { display: flex; justify-content: space-between; font-size: 11px; color: #aaa; margin-top: 5px;}
 
         .next-days { display: flex; flex-direction: column; flex: 1; }
         .day-row { display: flex; justify-content: space-between; align-items: center; font-size: 14px; padding: 6px 0; margin-bottom: 4px; border-bottom: 1px solid #333;}
@@ -83,7 +91,6 @@
 
         .agenda-right { width: 60%; padding: 20px; display: flex; flex-direction: column; }
         
-        /* HEADER CALENDRIER AVEC FLÈCHES */
         .cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; font-size: 18px; font-weight: bold; text-transform: uppercase; color: #ddd; }
         .nav-arrow { cursor: pointer; padding: 0 15px; color: #5e5ce6; user-select: none; font-size: 24px;}
         .nav-arrow:active { color: #fff; transform: scale(0.9); }
@@ -155,18 +162,28 @@
             <div id="clock">--:--</div>
             <div id="date">Chargement...</div>
         </div>
+        
         <div class="weather-now-grid">
             <div class="wn-icon" id="curr-icon">❓</div>
             <div class="wn-temp" id="curr-temp">--°</div>
             <div class="wn-desc" id="curr-desc">...</div>
-            <div class="wn-details"><span id="rain-risk" class="rain-risk">💧 --%</span><span id="moon-phase">🌑 Lune</span></div>
+            <div class="wn-details"><span id="rain-risk" class="rain-risk">💧 --%</span></div>
         </div>
+        
         <div class="next-hours" id="hourly-container"><div style="font-size:10px; color:#666;">Chargement...</div></div>
+        
         <div class="sun-cycle">
-            <div style="display:flex; justify-content: space-between;"><span style="color:orange; font-size: 12px; font-weight: bold;">SOLEIL</span></div>
+            <div class="cycle-header">
+                <span id="cycle-sun-label">SOLEIL</span>
+                <span id="cycle-moon-label">LUNE</span>
+            </div>
             <div class="sun-bar-bg"><div class="sun-bar-fill" id="sun-progress"></div></div>
-            <div class="sun-times"><span id="sunrise">--:--</span><span id="sunset">--:--</span></div>
+            <div class="sun-times">
+                <span id="label-left">--:--</span>
+                <span id="label-right">--:--</span>
+            </div>
         </div>
+        
         <div class="next-days" id="daily-container"></div>
     </div>
 
@@ -187,7 +204,6 @@
                 <span id="cal-month-year">...</span>
                 <span class="nav-arrow" onclick="changeMonth(1)">&#10095;</span>
             </div>
-            
             <div class="cal-grid"><div class="cal-day-name">L</div><div class="cal-day-name">M</div><div class="cal-day-name">M</div><div class="cal-day-name">J</div><div class="cal-day-name">V</div><div class="cal-day-name">S</div><div class="cal-day-name">D</div></div>
             <div class="cal-grid" id="cal-days-container"></div>
         </div>
@@ -234,18 +250,134 @@
     <script>
         document.body.addEventListener('touchmove', function(e) { if (e.target.closest('.agenda-left')) { return; } e.preventDefault(); }, { passive: false });
         
-        // --- VARIABLES GLOBALES ---
         let weatherCache = null;
         let lastRenderedHour = -1;
+        
+        // --- DONNEES ASTRONOMIQUES GLOBALES ---
+        let astros = {
+            todaySunrise: null,
+            todaySunset: null,
+            tomorrowSunrise: null
+        };
 
         function updateClock() { 
             const now = new Date(); 
             document.getElementById('clock').textContent = now.toLocaleTimeString('fr-FR', {hour: '2-digit', minute:'2-digit'}); 
             document.getElementById('date').textContent = now.toLocaleDateString('fr-FR', {weekday: 'long', day: 'numeric', month: 'long'}); 
+            
             updateTempoPeriod(now);
+            
+            // Mise à jour de la barre Cycle (Soleil ou Lune)
+            if(astros.todaySunrise && astros.todaySunset) {
+                updateSunCycle(now);
+            }
+
             if (now.getHours() !== lastRenderedHour && weatherCache) { renderWeatherFromCache(); }
         }
-        setInterval(updateClock, 1000); updateClock();
+        setInterval(updateClock, 1000); 
+
+        // --- CALCUL PHASE LUNE POUR LE TITRE ---
+        function getMoonPhaseInfo(date) {
+            let year = date.getFullYear();
+            let month = date.getMonth() + 1;
+            let day = date.getDate();
+            if (month < 3) { year--; month += 12; }
+            ++month;
+            let c = 365.25 * year;
+            let e = 30.6 * month;
+            let jd = c + e + day - 694039.09; 
+            jd /= 29.5305882; 
+            let b = parseInt(jd); 
+            jd -= b; 
+            b = Math.round(jd * 8);
+            if (b >= 8) b = 0; 
+            
+            const phases = [
+                { icon: "🌑", label: "Nouvelle" },      
+                { icon: "🌒", label: "Croissant" },      
+                { icon: "🌓", label: "1er Quartier" },       
+                { icon: "🌔", label: "Gibbeuse" },         
+                { icon: "🌕", label: "Pleine" },        
+                { icon: "🌖", label: "Gibbeuse" },         
+                { icon: "🌗", label: "Dernier Q." },         
+                { icon: "🌘", label: "Croissant" }      
+            ];
+            return phases[b];
+        }
+
+        // --- BARRE DE PROGRESSION JOUR / NUIT (LE CŒUR DU SYSTEME) ---
+        function updateSunCycle(now) {
+            const sunLabel = document.getElementById('cycle-sun-label');
+            const moonLabel = document.getElementById('cycle-moon-label');
+            const barFill = document.getElementById('sun-progress');
+            const labelLeft = document.getElementById('label-left');
+            const labelRight = document.getElementById('label-right');
+
+            const ft = (dt) => dt.toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit'});
+            
+            // On calcule toujours la phase de lune pour l'afficher
+            const moon = getMoonPhaseInfo(now);
+            moonLabel.textContent = `${moon.icon} ${moon.label}`;
+
+            // LOGIQUE JOUR : On est entre le lever et le coucher d'aujourd'hui
+            if (now >= astros.todaySunrise && now <= astros.todaySunset) {
+                // TITRES
+                sunLabel.style.color = "orange"; // Actif
+                sunLabel.style.opacity = "1";
+                
+                moonLabel.style.color = "#777"; // Inactif
+                moonLabel.style.opacity = "0.5";
+
+                // BARRE
+                barFill.style.background = "orange";
+                let totalDay = astros.todaySunset - astros.todaySunrise;
+                let elapsed = now - astros.todaySunrise;
+                let pct = (elapsed / totalDay) * 100;
+                barFill.style.width = Math.min(100, Math.max(0, pct)) + "%";
+
+                // LABELS
+                labelLeft.textContent = "Lever " + ft(astros.todaySunrise);
+                labelRight.textContent = "Coucher " + ft(astros.todaySunset);
+            } 
+            // LOGIQUE NUIT
+            else {
+                // TITRES
+                sunLabel.style.color = "#777"; // Inactif
+                sunLabel.style.opacity = "0.5";
+
+                // Actif (Or si pleine lune, sinon Blanc/Clair)
+                moonLabel.style.opacity = "1";
+                moonLabel.style.color = (moon.label.includes("Pleine")) ? "#ffd700" : "#fff"; 
+
+                // BARRE
+                barFill.style.background = "#4a6fa5"; // Bleu nuit un peu grisé
+
+                // Calcul de progression NUIT
+                // Cas 1 : Soirée (Après le coucher, avant minuit)
+                if (now > astros.todaySunset) {
+                    let totalNight = astros.tomorrowSunrise - astros.todaySunset;
+                    let elapsed = now - astros.todaySunset;
+                    let pct = (elapsed / totalNight) * 100;
+                    barFill.style.width = Math.min(100, Math.max(0, pct)) + "%";
+                    
+                    labelLeft.textContent = "Coucher " + ft(astros.todaySunset);
+                    labelRight.textContent = "Lever " + ft(astros.tomorrowSunrise);
+                }
+                // Cas 2 : Matin (Avant le lever, après minuit)
+                else if (now < astros.todaySunrise) {
+                    // On simule le coucher d'hier pour la barre visuelle
+                    let yesterdaySunset = new Date(astros.todaySunset.getTime() - (24*3600*1000));
+                    
+                    let totalNight = astros.todaySunrise - yesterdaySunset;
+                    let elapsedActual = now - yesterdaySunset;
+                    let pct = (elapsedActual / totalNight) * 100;
+                    barFill.style.width = Math.min(100, Math.max(0, pct)) + "%";
+
+                    labelLeft.textContent = "Coucher " + ft(yesterdaySunset); 
+                    labelRight.textContent = "Lever " + ft(astros.todaySunrise);
+                }
+            }
+        }
 
         function updateTempoPeriod(dateObj) {
             const hour = dateObj.getHours();
@@ -255,7 +387,6 @@
             if (hour >= 6 && hour < 22) { badgeHP.classList.add("active", "active-hp"); } else { badgeHC.classList.add("active", "active-hc"); }
         }
 
-        // --- TEMPO ---
         function fetchTempo() {
             const apiToday = "https://www.api-couleur-tempo.fr/api/jourTempo/today";
             const apiTmrw = "https://www.api-couleur-tempo.fr/api/jourTempo/tomorrow";
@@ -281,15 +412,10 @@
         }
         fetchTempo(); setInterval(fetchTempo, 3600000);
 
-        // --- GESTION URL CALENDRIER ---
         function checkCalendarUrl() {
             const url = localStorage.getItem('my_cal_url');
-            if (!url) {
-                document.getElementById('url-modal').classList.add('show');
-            } else {
-                document.getElementById('url-modal').classList.remove('show');
-                fetchAndParseICS(url);
-            }
+            if (!url) { document.getElementById('url-modal').classList.add('show'); } 
+            else { document.getElementById('url-modal').classList.remove('show'); fetchAndParseICS(url); }
         }
         function saveUrl() {
             const input = document.getElementById('ics-input').value;
@@ -299,122 +425,68 @@
             if(confirm('Voulez-vous changer l\'adresse du calendrier ?')) { localStorage.removeItem('my_cal_url'); location.reload(); }
         }
 
-        // --- AGENDA LOGIC AVEC NAVIGATION ---
         let myEvents = {};
-        
-        // displayedDate sert à savoir quel mois on affiche à l'écran
         let displayedDate = new Date(); 
-        
-        // selectedCalDate sert à savoir quel jour est cliqué (pour la liste à gauche)
         let selectedCalDate = new Date();
 
         function fetchAndParseICS(url) {
             const listContainer = document.getElementById('events-list-container');
             listContainer.innerHTML = '<div class="no-event">Chargement...</div>';
-
-            const proxyUrl = 'https://corsproxy.io/?' + encodeURIComponent(url);
-
+            const proxyUrl = 'https://corsproxy.io/?' + encodeURIComponent(url) + '&dummy=' + Date.now();
             fetch(proxyUrl)
-                .then(response => {
-                    if (!response.ok) throw new Error("HTTP " + response.status);
-                    return response.text();
-                })
+                .then(response => { if (!response.ok) throw new Error("HTTP " + response.status); return response.text(); })
                 .then(data => {
-                    if (!data.includes("BEGIN:VCALENDAR")) {
-                        throw new Error("Ce lien ne semble pas être un fichier ICS valide.");
-                    }
-
+                    if (!data.includes("BEGIN:VCALENDAR")) { throw new Error("Fichier ICS invalide."); }
                     const jcalData = ICAL.parse(data);
                     const comp = new ICAL.Component(jcalData);
                     const vevents = comp.getAllSubcomponents('vevent');
-                    
                     myEvents = {}; 
-
                     vevents.forEach(evt => {
                         const event = new ICAL.Event(evt);
                         let startDate;
                         try { startDate = event.startDate.toJSDate(); } catch(e) { return; }
-
                         const summary = event.summary || "Sans titre";
                         const desc = event.description || "";
-                        
                         const dateKey = startDate.toISOString().split('T')[0];
                         const timeStr = startDate.toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit'});
-
                         if (!myEvents[dateKey]) { myEvents[dateKey] = []; }
                         myEvents[dateKey].push({ time: timeStr, title: summary, desc: desc });
                     });
-
-                    // Une fois chargé, on affiche le calendrier
                     renderCalendar(displayedDate);
                     showEventsForDate(selectedCalDate);
                 })
                 .catch(err => {
                     console.error("Erreur ICS:", err);
-                    listContainer.innerHTML = `<div class="no-event" style="color:#ff453a; font-weight:bold">Erreur de chargement</div>`;
-                    listContainer.innerHTML += `<div class="debug-error">${err.message}</div>`;
+                    listContainer.innerHTML = `<div class="no-event" style="color:#ff453a;">Erreur chargement</div>`;
                 });
         }
 
-        // Fonction pour changer de mois (+1 ou -1)
         function changeMonth(offset) {
-            // On met le jour à 1 pour éviter les bugs de débordement (ex: 31 Jan -> Fev)
             displayedDate.setDate(1);
             displayedDate.setMonth(displayedDate.getMonth() + offset);
             renderCalendar(displayedDate);
         }
-
         function initCalendar() { renderCalendar(displayedDate); showEventsForDate(selectedCalDate); checkCalendarUrl(); }
 
         function renderCalendar(date) {
-            const year = date.getFullYear(); 
-            const month = date.getMonth(); 
-            const today = new Date();
+            const year = date.getFullYear(); const month = date.getMonth(); const today = new Date();
             const mNames = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"];
-            
             document.getElementById('cal-month-year').textContent = mNames[month] + " " + year;
-            
-            const cDays = document.getElementById('cal-days-container'); 
-            cDays.innerHTML = "";
-            
-            const fDay = new Date(year, month, 1).getDay(); 
-            let off = fDay === 0 ? 6 : fDay - 1; 
-            const dInM = new Date(year, month + 1, 0).getDate();
-            
+            const cDays = document.getElementById('cal-days-container'); cDays.innerHTML = "";
+            const fDay = new Date(year, month, 1).getDay(); let off = fDay === 0 ? 6 : fDay - 1; const dInM = new Date(year, month + 1, 0).getDate();
             for (let i = 0; i < off; i++) cDays.innerHTML += `<div class="cal-day empty"></div>`;
-            
             for (let i = 1; i <= dInM; i++) {
                 const el = document.createElement('div'); el.classList.add('cal-day'); el.textContent = i;
-                
                 const checkDate = new Date(year, month, i);
                 const offset = checkDate.getTimezoneOffset() * 60000;
                 const localISOTime = (new Date(checkDate - offset)).toISOString().split('T')[0];
-
-                // Cercle violet sur "Aujourd'hui" (uniquement si on affiche le mois courant)
-                if (i===today.getDate() && month===today.getMonth() && year===today.getFullYear()) {
-                    el.classList.add('today');
-                }
-                
-                // Fond violet plein sur la date SÉLECTIONNÉE
-                if (i===selectedCalDate.getDate() && month===selectedCalDate.getMonth() && year===selectedCalDate.getFullYear()) {
-                    el.classList.add('active');
-                }
-                
-                // Petit point blanc s'il y a un événement
+                if (i===today.getDate() && month===today.getMonth() && year===today.getFullYear()) { el.classList.add('today'); }
+                if (i===selectedCalDate.getDate() && month===selectedCalDate.getMonth() && year===selectedCalDate.getFullYear()) { el.classList.add('active'); }
                 if (myEvents[localISOTime]) el.classList.add('has-event');
-
-                el.onclick = function() { 
-                    document.querySelectorAll('.cal-day').forEach(d => d.classList.remove('active')); 
-                    el.classList.add('active'); 
-                    
-                    // On met à jour la date sélectionnée globale
-                    selectedCalDate = new Date(year, month, i); 
-                    showEventsForDate(selectedCalDate); 
-                };
+                el.onclick = function() { document.querySelectorAll('.cal-day').forEach(d => d.classList.remove('active')); el.classList.add('active'); selectedCalDate = new Date(year, month, i); showEventsForDate(selectedCalDate); };
                 cDays.appendChild(el);
             }
         }
-
         function showEventsForDate(date) {
             const cont = document.getElementById('events-list-container'); cont.innerHTML = ""; 
             const offset = date.getTimezoneOffset() * 60000;
@@ -429,7 +501,6 @@
         }
         initCalendar();
 
-        // --- METEO FIXEE ---
         function fetchWeather() {
             const url = "https://api.open-meteo.com/v1/forecast?latitude=47.20&longitude=-0.99&current=temperature_2m,is_day,precipitation,weather_code&hourly=temperature_2m,precipitation_probability,weather_code&daily=weather_code,sunrise,sunset,precipitation_probability_max&timezone=Europe%2FParis";
             const xhr = new XMLHttpRequest(); xhr.open("GET", url); 
@@ -442,20 +513,30 @@
             if (!weatherCache) return;
             const data = weatherCache; const c = data.current; const d = data.daily; const h = data.hourly;
             lastRenderedHour = new Date().getHours();
+            
             document.getElementById('curr-temp').textContent = Math.round(c.temperature_2m) + "°";
             document.getElementById('curr-icon').textContent = getIcon(c.weather_code, c.is_day);
             document.getElementById('curr-desc').textContent = {0:"Ensoleillé", 1:"Variable", 2:"Nuageux", 3:"Couvert", 61:"Pluie"}[c.weather_code] || "Variable";
             document.getElementById('rain-risk').textContent = "💧 " + d.precipitation_probability_max[0] + "%";
+            
             const hCont = document.getElementById('hourly-container'); hCont.innerHTML = "";
             const curH = lastRenderedHour; 
             for(let i=0; i<5; i++) {
                 let idx = curH + i; if(idx>23) idx-=24;
                 hCont.innerHTML += `<div class="hour-col"><span class="hc-time">${idx}h</span><span class="hc-icon">${getIcon(h.weather_code[idx], 1)}</span><span class="hc-temp">${Math.round(h.temperature_2m[idx])}°</span></div>`;
             }
-            const sr = new Date(d.sunrise[0]); const ss = new Date(d.sunset[0]); const now = new Date(); const ft = (dt) => dt.toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit'});
-            document.getElementById('sunrise').textContent = "Lever " + ft(sr); document.getElementById('sunset').textContent = "Coucher " + ft(ss);
-            let pct = 0; if (now > ss) pct = 100; else if (now > sr) { pct = ((now - sr) / (ss - sr)) * 100; }
-            document.getElementById('sun-progress').style.width = pct + "%";
+            
+            // SAUVEGARDE DES HEURES POUR GESTION CYCLE BARRE
+            astros.todaySunrise = new Date(d.sunrise[0]); 
+            astros.todaySunset = new Date(d.sunset[0]);
+            if(d.sunrise[1]) {
+                astros.tomorrowSunrise = new Date(d.sunrise[1]);
+            } else {
+                astros.tomorrowSunrise = new Date(astros.todaySunrise.getTime() + 24*3600*1000);
+            }
+            
+            updateSunCycle(new Date());
+
             const dCont = document.getElementById('daily-container'); dCont.innerHTML = "";
             for(let i=1; i<=5; i++) {
                 const dateObj = new Date(d.time[i]);
@@ -472,6 +553,7 @@
             }
         }
         fetchWeather(); setInterval(fetchWeather, 1800000);
+        updateClock();
     </script>
 </body>
 </html>
