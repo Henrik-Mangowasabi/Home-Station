@@ -20,13 +20,15 @@
             margin: 0; padding: 15px;
             width: 100%; height: 100%;
             overflow: hidden; box-sizing: border-box; position: fixed;
-            display: grid; grid-gap: 15px;
-            grid-template-columns: 1fr 2fr; 
-            grid-template-rows: 1fr 1fr 1fr;
+            
+            /* --- NOUVELLE GRILLE (LAYOUT) --- */
+            display: grid; 
+            grid-gap: 15px;
+            grid-template-columns: 1fr 1fr 1.4fr;
+            grid-template-rows: 1fr 1.5fr;
             grid-template-areas:
-                "panel-left  panel-agenda"
-                "panel-left  panel-tempo"
-                "panel-left  panel-conso";
+                "panel-left  panel-agenda panel-agenda"
+                "panel-left  panel-tempo  panel-conso";
         }
 
         .card { background-color: #1c1c1e; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; position: relative; overflow: hidden; }
@@ -117,8 +119,8 @@
         /* TEMPO & CONSO */
         .panel-tempo { grid-area: panel-tempo; background: #1c1c1e; border-radius: 20px; padding: 20px; display: flex; flex-direction: column;}
         .tempo-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-        .tempo-body-flex { display: flex; justify-content: space-between; align-items: center; flex: 1; margin-bottom: 15px; width: 100%; }
-        .tempo-colors { display: flex; flex: 1; justify-content: space-around; align-items: center; margin-right: 15px; }
+        .tempo-body-flex { display: flex; flex-direction: column; align-items: center; flex: 1; margin-bottom: 15px; width: 100%; justify-content: center; }
+        .tempo-colors { display: flex; width: 100%; justify-content: space-around; align-items: center; margin-bottom: 20px; }
         .tempo-day-box { display: flex; flex-direction: column; align-items: center; }
         .tempo-label { font-size: 12px; color: #aaa; text-transform: uppercase; margin-bottom: 8px; letter-spacing: 1px; font-weight: normal;}
         .tempo-circle { width: 60px; height: 60px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 24px; font-weight: bold; border: 3px solid #333; background: #222; box-shadow: 0 4px 10px rgba(0,0,0,0.5); transition: all 0.5s ease;}
@@ -127,15 +129,15 @@
         .tempo-red { background: radial-gradient(circle at 30% 30%, #dc3545, #bd2130); border-color: #a71d2a; color: white; text-shadow: 0 1px 2px rgba(0,0,0,0.5);}
         .tempo-unk { border: 2px dashed #555; color: #555; font-size: 10px; }
         .tempo-text { font-size: 14px; font-weight: bold; margin-top: 8px; color: #fff; }
-        .tempo-status-list { display: flex; flex-direction: column; min-width: 140px;}
+        .tempo-status-list { display: flex; flex-direction: column; width: 100%;}
         .status-item { padding: 8px 12px; border-radius: 20px; font-size: 12px; color: #666; background: #252527; border: 1px solid #333; transition: all 0.3s ease; display: flex; align-items: center; justify-content: space-between;}
-        .status-item.active { transform: scale(1.05); border: none; color: #fff; font-weight: bold; box-shadow: 0 4px 12px rgba(0,0,0,0.3);}
+        .status-item.active {border: none; color: #fff; font-weight: bold; box-shadow: 0 4px 12px rgba(0,0,0,0.3);}
         .active-hp { background-color: #ff453a !important; margin-bottom: 10px; }
         .active-hc { background-color: #30d158 !important; }
         .si-time { font-size: 10px; opacity: 0.8; top: 1px; padding-left: 5px; position: relative; }
-        .tempo-stats { display: flex; justify-content: space-between; background: #2c2c2e; padding: 10px 0; border-radius: 12px;}
-        .stat-col { flex: 1; display: flex; flex-direction: column; align-items: center; margin: 0 10px; }
-        .stat-val { font-size: 14px; font-weight: bold; display: flex; justify-content: space-center; align-items: center;}
+        .tempo-stats { display: flex; flex-direction: column; justify-content: space-between; background: #2c2c2e; padding-top: 10px; border-radius: 12px;}
+        .stat-col { flex: 1; display: flex; align-items: center; margin: 0 10px; margin-bottom: 10px; }
+        .stat-val { width: 60px; margin-right: 10px; font-size: 14px; font-weight: bold; display: flex; align-items: center; justify-content: center;}
         .stat-total { font-size: 10px; color: #888; position: relative; top: 1px; padding-left: 5px; }
         .progress-bg { width: 100%; height: 4px; background: #444; border-radius: 2px; margin-top: 5px; overflow: hidden;}
         .progress-fill { height: 100%; border-radius: 2px; }
@@ -229,11 +231,11 @@
             </div>
             <div class="tempo-status-list">
                 <div id="badge-hp" class="status-item">
-                    <span>⚡ H. Pleines</span>
+                    <span>⚡ Heures Pleines</span>
                     <span class="si-time">06h - 22h</span>
                 </div>
                 <div id="badge-hc" class="status-item">
-                    <span>🌙 H. Creuses</span>
+                    <span>🌙 Heures Creuses</span>
                     <span class="si-time">22h - 06h</span>
                 </div>
             </div>
@@ -508,7 +510,25 @@
                 if (xhr.status === 200) { weatherCache = JSON.parse(xhr.responseText); renderWeatherFromCache(); }
             }; xhr.send();
         }
-        function getIcon(c, d) { const i = { 0: "☀️", 1: "🌤", 2: "☁️", 3: "☁️", 45: "🌫", 51: "🌦", 61: "🌧", 71: "❄️", 95: "⚡️" }; let ic = i[c] || "❓"; if (!d && (c === 0 || c === 1)) ic = "🌙"; return ic; }
+        // ICONES METEO CORRIGEES (AVEC TOUS LES CODES)
+        function getIcon(c, d) { 
+            const i = { 
+                0: "☀️", 1: "🌤", 2: "☁️", 3: "☁️", // Clair / Nuageux
+                45: "🌫", 48: "🌫", // Brouillard
+                51: "🌦", 53: "🌦", 55: "🌦", // Bruine
+                56: "❄️", 57: "❄️", // Bruine verglaçante
+                61: "🌧", 63: "🌧", 65: "🌧", // Pluie
+                66: "❄️", 67: "❄️", // Pluie verglaçante
+                71: "❄️", 73: "❄️", 75: "❄️", 77: "❄️", // Neige
+                80: "🌦", 81: "🌧", 82: "🌧", // Averses de pluie
+                85: "❄️", 86: "❄️", // Averses de neige
+                95: "⚡️", 96: "⛈", 99: "⛈" // Orages
+            }; 
+            let ic = i[c] || "❓"; 
+            if (!d && (c === 0 || c === 1)) ic = "🌙"; 
+            return ic; 
+        }
+
         function renderWeatherFromCache() {
             if (!weatherCache) return;
             const data = weatherCache; const c = data.current; const d = data.daily; const h = data.hourly;
