@@ -434,16 +434,19 @@
             const listContainer = document.getElementById('events-list-container');
             listContainer.innerHTML = '<div class="no-event">Chargement...</div>';
 
+            // 1. On utilise corsproxy.io (le plus fiable)
+            // 2. On NE modifie PAS l'URL avec des ?dummy=... pour ne pas fâcher OVH
             const proxyUrl = 'https://corsproxy.io/?' + encodeURIComponent(url);
 
-            fetch(proxyUrl)
+            // 3. On dit au navigateur "Interdiction de stocker cette page en mémoire" via { cache: "no-store" }
+            fetch(proxyUrl, { cache: "no-store" })
                 .then(response => {
                     if (!response.ok) throw new Error("HTTP " + response.status);
                     return response.text();
                 })
                 .then(data => {
                     if (!data.includes("BEGIN:VCALENDAR")) {
-                        throw new Error("Ce lien ne semble pas être un fichier ICS valide.");
+                        throw new Error("Ce lien n'est pas un fichier ICS valide.");
                     }
 
                     const jcalData = ICAL.parse(data);
@@ -467,14 +470,14 @@
                         myEvents[dateKey].push({ time: timeStr, title: summary, desc: desc });
                     });
 
-                    // Une fois chargé, on affiche le calendrier
                     renderCalendar(displayedDate);
                     showEventsForDate(selectedCalDate);
                 })
                 .catch(err => {
                     console.error("Erreur ICS:", err);
-                    listContainer.innerHTML = `<div class="no-event" style="color:#ff453a; font-weight:bold">Erreur de chargement</div>`;
-                    listContainer.innerHTML += `<div class="debug-error">${err.message}</div>`;
+                    listContainer.innerHTML = `<div class="no-event" style="color:#ff453a;">Erreur chargement</div>`;
+                    // Affiche l'erreur en petit pour t'aider
+                    listContainer.innerHTML += `<div class="debug-error" style="border:none; color:#666;">${err.message}</div>`;
                 });
         }
 
