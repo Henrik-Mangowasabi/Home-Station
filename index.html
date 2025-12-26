@@ -10,17 +10,24 @@
     <meta http-equiv="refresh" content="1800">
 
     <style>
-        /* --- 1. STRUCTURE GÉNÉRALE --- */
-        body {
+        /* --- 1. STRUCTURE GÉNÉRALE VERROUILLÉE --- */
+        html, body {
             background-color: #000;
             color: #fff;
             font-family: -apple-system, Helvetica, Arial, sans-serif;
-            margin: 0;
+            margin: 0; 
             padding: 15px;
-            height: 96vh;
-            display: grid;
-            grid-gap: 15px;
-            /* GRILLE : 1/3 à gauche, 2/3 à droite */
+            
+            /* C'EST ICI QUE LA MAGIE OPÈRE POUR BLOQUER LE SCROLL */
+            width: 100%;
+            height: 100%;
+            overflow: hidden; /* Interdit le dépassement */
+            box-sizing: border-box; /* Le padding est inclus dans les 100% */
+            position: fixed; /* Force l'écran à ne pas bouger sur vieux iOS */
+            
+            display: grid; 
+            grid-gap: 15px; /* Vieux iPad compatible */
+            
             grid-template-columns: 1fr 2fr; 
             grid-template-rows: 1fr 1fr 1fr;
             grid-template-areas:
@@ -29,117 +36,112 @@
                 "panel-left  panel-conso";
         }
 
-        /* --- 2. STYLE DES BOITES (CARDS) --- */
+        /* --- 2. STYLE DES BOITES --- */
         .card {
-            background-color: #1c1c1e;
-            border-radius: 20px;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            overflow: hidden;
+            background-color: #1c1c1e; border-radius: 20px; padding: 20px;
+            display: flex; flex-direction: column; position: relative; overflow: hidden;
         }
 
-        /* --- 3. CONTENU GAUCHE (MÉTÉO DÉTAILLÉE) --- */
-        .panel-left {
-            grid-area: panel-left;
-            display: flex;
-            flex-direction: column;
-        }
+        /* --- 3. COLONNE GAUCHE (METEO) --- */
+        .panel-left { grid-area: panel-left; }
 
-        /* BLOC HEURE */
-        .header-time {
-            text-align: center;
-            border-bottom: 1px solid #333;
-            padding-bottom: 20px;
-            margin-bottom: 5px;
-        }
+        /* HEURE */
+        .header-time { text-align: center; border-bottom: 1px solid #333; padding-bottom: 10px; margin-bottom: 5px; }
         #clock { font-size: 50px; font-weight: bold; line-height: 1; letter-spacing: 2px;}
         #date { font-size: 16px; color: #aaa; margin-top: 5px; text-transform: capitalize;}
 
-        /* BLOC MÉTÉO ACTUELLE */
+        /* METEO ACTUELLE */
         .weather-now-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            grid-gap: 5px;
-            align-items: center;
-            border-radius: 15px;
-            margin-bottom: 10px;
+            display: grid; grid-template-columns: 1fr 1fr; align-items: center;
+            padding: 15px; border-radius: 15px; margin-bottom: 10px;
+            grid-gap: 5px; 
         }
         .wn-icon { font-size: 50px; text-align: center; } 
         .wn-temp { font-size: 40px; font-weight: bold; text-align: center; color: #fff; }
         .wn-desc { font-size: 14px; color: #aaa; text-align: center; grid-column: 1; }
-        .wn-details { 
-            grid-column: 2; display: flex; justify-content: center; grid-gap: 10px; font-size: 12px; color: #888;
-        }
+        .wn-details { grid-column: 2; display: flex; justify-content: center; font-size: 12px; color: #888; }
+        .wn-details span { margin: 0 5px; }
         .rain-risk { color: #64d2ff; font-weight: bold; }
 
-        /* BLOC 5 PROCHAINES HEURES */
-        .next-hours {
-            display: flex;
-            justify-content: space-between;
-            border-radius: 15px;
-            margin-bottom: 10px;
-        }
-        .hour-col {
-            display: flex; flex-direction: column; align-items: center; font-size: 12px;
-        }
-        .hc-time { color: #aaa; margin-bottom: 5px; }
-        .hc-icon { font-size: 18px; margin-bottom: 5px; }
-        .hc-temp { font-weight: bold; }
+        /* HEURES */
+        .next-hours { display: flex; justify-content: space-between; padding: 10px; border-radius: 15px; margin-bottom: 10px; }
+        .hour-col { display: flex; flex-direction: column; align-items: center; font-size: 12px; }
+        .hc-time { color: #aaa; margin-bottom: 5px; } .hc-icon { font-size: 18px; margin-bottom: 5px; } .hc-temp { font-weight: bold; }
 
-        /* BLOC CYCLE SOLEIL */
-        .sun-cycle {
-            border-radius: 15px;
-            margin-bottom: 10px;
-            display: flex; flex-direction: column; grid-gap: 5px;
-        }
+        /* SOLEIL */
+        .sun-cycle { padding: 15px; border-radius: 15px; margin-bottom: 10px; display: flex; flex-direction: column; }
+        .sun-cycle > div { margin-bottom: 5px; }
         .sun-times { display: flex; justify-content: space-between; font-size: 12px; color: #aaa; }
         .sun-bar-bg { width: 100%; height: 6px; background: #444; border-radius: 3px; position: relative; overflow: hidden; margin-top: 5px;}
         .sun-bar-fill { height: 100%; background: orange; width: 0%; transition: width 1s; }
 
-        /* BLOC 5 PROCHAINS JOURS */
-        .next-days {
-            display: flex;
-            flex-direction: column;
-            flex: 1;
-            grid-gap: 8px; /* Espace entre les jours */
-        }
-        .day-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 14px;
-            border-bottom: 1px solid #333;
-            padding: 8px 0;
+        /* JOURS */
+        .next-days { display: flex; flex-direction: column; flex: 1; }
+        .day-row { 
+            display: flex; justify-content: space-between; align-items: center; font-size: 14px; 
+            border-bottom: 1px solid #333; padding: 8px 0; margin-bottom: 8px;
         }
         .dr-name { width: 40px; font-weight: bold; color: #ddd; text-transform: capitalize;}
         .dr-date { font-size: 12px; color: #777; width: 30px;}
-        
-        /* --- MODIFICATION ICI : ICONE PLUS GRANDE --- */
-        .dr-icon { 
-            font-size: 35px; /* Agrandit l'icone */
-            width: 50px; 
-            text-align: center; 
-        }
-
-        .dr-temps { 
-            color: #aaa; 
-            font-size: 12px; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: flex-end;
-            grid-gap: 2px;
-            min-width: 80px;
-        }
-        .temp-line { display: flex; grid-gap: 8px; }
+        .dr-icon { font-size: 35px; width: 50px; text-align: center; }
+        .dr-temps { color: #aaa; font-size: 12px; display: flex; flex-direction: column; align-items: flex-end; min-width: 80px; }
+        .dr-temps > div { margin-bottom: 2px; }
+        .temp-line { display: flex; } .temp-line > span { margin-left: 8px; }
         .temp-val { color: #fff; font-weight: bold; font-size: 14px; width: 30px; text-align: right;}
 
-        /* --- 4. ZONES DE DROITE --- */
-        .panel-agenda { grid-area: panel-agenda; background: #1c1c1e; border-radius: 20px; padding: 20px;}
+        /* --- 4. STYLE AGENDA --- */
+        .panel-agenda { 
+            grid-area: panel-agenda; 
+            background: #1c1c1e; border-radius: 20px; padding: 0; 
+            display: flex; 
+            overflow: hidden; 
+        }
+
+        /* Coté Gauche (Liste Events SCROLLABLE) */
+        .agenda-left {
+            width: 40%;
+            background-color: #2c2c2e;
+            padding: 20px;
+            display: flex; flex-direction: column;
+            border-right: 1px solid #333;
+            
+            /* On autorise le scroll ICI SEULEMENT */
+            overflow-y: auto; 
+            -webkit-overflow-scrolling: touch; /* Scroll fluide iOS */
+        }
+        .agenda-left > div { margin-bottom: 15px; }
+
+        .agenda-title { font-size: 14px; color: #aaa; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; }
+        .selected-date-display { font-size: 24px; font-weight: bold; margin-bottom: 10px; color: #fff; }
+        
+        .event-card {
+            background-color: #5e5ce6; color: white; padding: 15px; border-radius: 15px;
+            display: flex; flex-direction: column;
+        }
+        .event-card > div { margin-bottom: 5px; }
+        .event-time { font-size: 12px; opacity: 0.8; font-weight: bold; }
+        .event-name { font-size: 16px; font-weight: bold; }
+        .event-desc { font-size: 12px; opacity: 0.9; }
+        .no-event { color: #777; font-style: italic; margin-top: 10px; }
+
+        /* Coté Droit (Calendrier) */
+        .agenda-right { width: 60%; padding: 20px; display: flex; flex-direction: column; }
+        .cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; font-size: 18px; font-weight: bold; text-transform: uppercase; color: #ddd; }
+        .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); grid-gap: 5px; text-align: center; }
+        .cal-day-name { font-size: 12px; color: #666; padding-bottom: 10px; }
+        .cal-day {
+            aspect-ratio: 1; display: flex; justify-content: center; align-items: center; border-radius: 50%;
+            font-size: 14px; cursor: pointer; transition: background 0.2s;
+        }
+        .cal-day.today { border: 2px solid #5e5ce6; color: #fff; }
+        .cal-day.active { background-color: #5e5ce6; color: #fff; border: none;}
+        .cal-day.has-event::after { content: ''; position: absolute; bottom: 5px; width: 4px; height: 4px; background-color: #5e5ce6; border-radius: 50%; }
+        .cal-day.empty { pointer-events: none; }
+
+
+        /* --- 5. AUTRES ZONES --- */
         .panel-tempo { grid-area: panel-tempo; background: #1c1c1e; border-radius: 20px; padding: 20px;}
         .panel-conso { grid-area: panel-conso; background: #1c1c1e; border-radius: 20px; padding: 20px;}
-        
         h2 { margin: 0; color: #555; font-size: 14px; text-transform: uppercase; margin-bottom: 10px; }
 
     </style>
@@ -147,203 +149,147 @@
 <body>
 
     <div class="card panel-left">
-        
         <div class="header-time">
             <div id="clock">--:--</div>
             <div id="date">Chargement...</div>
         </div>
-
         <div class="weather-now-grid">
             <div class="wn-icon" id="curr-icon">❓</div>
             <div class="wn-temp" id="curr-temp">--°</div>
             <div class="wn-desc" id="curr-desc">...</div>
-            <div class="wn-details">
-                <span id="rain-risk" class="rain-risk">💧 --%</span>
-                <span id="moon-phase">🌑 Lune</span>
-            </div>
+            <div class="wn-details"><span id="rain-risk" class="rain-risk">💧 --%</span><span id="moon-phase">🌑 Lune</span></div>
         </div>
-
-        <div class="next-hours" id="hourly-container">
-            <div style="font-size:10px; color:#666;">Chargement météo...</div>
-        </div>
-
+        <div class="next-hours" id="hourly-container"><div style="font-size:10px; color:#666;">Chargement...</div></div>
         <div class="sun-cycle">
-            <div style="display:flex; justify-content: space-between; align-items: center;">
-                <span style="color:orange; font-size: 12px; font-weight: bold;">SOLEIL</span>
-            </div>
-            <div class="sun-bar-bg">
-                <div class="sun-bar-fill" id="sun-progress"></div>
-            </div>
-            <div class="sun-times">
-                <span id="sunrise">--:--</span>
-                <span id="sunset">--:--</span>
-            </div>
+            <div style="display:flex; justify-content: space-between;"><span style="color:orange; font-size: 12px; font-weight: bold;">SOLEIL</span></div>
+            <div class="sun-bar-bg"><div class="sun-bar-fill" id="sun-progress"></div></div>
+            <div class="sun-times"><span id="sunrise">--:--</span><span id="sunset">--:--</span></div>
         </div>
-
-        <div class="next-days" id="daily-container">
-        </div>
-
+        <div class="next-days" id="daily-container"></div>
     </div>
 
 
     <div class="panel-agenda">
-        <h2>Agenda</h2>
-        <p style="color:#555;">(On s'occupera de ça après)</p>
+        <div class="agenda-left" id="agenda-scroll-zone">
+            <div>
+                <div class="agenda-title">Événements</div>
+                <div id="selected-date-text" class="selected-date-display">Aujourd'hui</div>
+            </div>
+            <div id="events-list-container"></div>
+        </div>
+
+        <div class="agenda-right">
+            <div class="cal-header" id="cal-month-year">...</div>
+            <div class="cal-grid"><div class="cal-day-name">L</div><div class="cal-day-name">M</div><div class="cal-day-name">M</div><div class="cal-day-name">J</div><div class="cal-day-name">V</div><div class="cal-day-name">S</div><div class="cal-day-name">D</div></div>
+            <div class="cal-grid" id="cal-days-container"></div>
+        </div>
     </div>
 
-    <div class="panel-tempo">
-        <h2>Tempo</h2>
-        <p style="color:#555;">(Zone vide)</p>
-    </div>
-
-    <div class="panel-conso">
-        <h2>Conso</h2>
-        <p style="color:#555;">(Zone vide)</p>
-    </div>
-
+    <div class="panel-tempo"><h2>Tempo</h2><p style="color:#555;">(Zone vide)</p></div>
+    <div class="panel-conso"><h2>Conso</h2><p style="color:#555;">(Zone vide)</p></div>
 
     <script>
-        // --- 1. GESTION HEURE & DATE ---
+        // --- 0. ANTI-REBOND (Bloque le scroll sauf sur l'agenda) ---
+        // Ce script empêche de bouger la page globalement
+        document.body.addEventListener('touchmove', function(e) {
+            // Si on touche l'intérieur de la zone agenda-left, on autorise le scroll
+            if (e.target.closest('.agenda-left')) {
+                return; // On laisse faire
+            }
+            // Sinon, on bloque tout
+            e.preventDefault();
+        }, { passive: false });
+
+
+        // --- 1. HORLOGE ---
         function updateClock() {
             const now = new Date();
-            const timeStr = now.toLocaleTimeString('fr-FR', {hour: '2-digit', minute:'2-digit'});
-            const dateStr = now.toLocaleDateString('fr-FR', {weekday: 'long', day: 'numeric', month: 'long'});
-            
-            document.getElementById('clock').textContent = timeStr;
-            document.getElementById('date').textContent = dateStr;
+            document.getElementById('clock').textContent = now.toLocaleTimeString('fr-FR', {hour: '2-digit', minute:'2-digit'});
+            document.getElementById('date').textContent = now.toLocaleDateString('fr-FR', {weekday: 'long', day: 'numeric', month: 'long'});
         }
-        setInterval(updateClock, 1000);
-        updateClock();
+        setInterval(updateClock, 1000); updateClock();
 
-        // --- 2. GESTION MÉTÉO (Beaupréau-en-Mauges) ---
+        // --- 2. AGENDA ---
+        const myEvents = {
+            "2025-12-26": [{ time: "14:00", title: "Réunion", desc: "Bureau" }, { time: "18:00", title: "Sport", desc: "Gym" }],
+            "2025-12-27": [{ time: "12:00", title: "Déjeuner", desc: "Pierre" }],
+            "2025-12-31": [{ time: "20:00", title: "Réveillon", desc: "Maison" }]
+        };
+        let currentCalDate = new Date(); let selectedCalDate = new Date();
+
+        function initCalendar() { renderCalendar(currentCalDate); showEventsForDate(selectedCalDate); }
+        function renderCalendar(date) {
+            const year = date.getFullYear(); const month = date.getMonth(); const today = new Date();
+            const mNames = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"];
+            document.getElementById('cal-month-year').textContent = mNames[month] + " " + year;
+            const cDays = document.getElementById('cal-days-container'); cDays.innerHTML = "";
+            const fDay = new Date(year, month, 1).getDay(); 
+            let off = fDay === 0 ? 6 : fDay - 1;
+            const dInM = new Date(year, month + 1, 0).getDate();
+            for (let i = 0; i < off; i++) cDays.innerHTML += `<div class="cal-day empty"></div>`;
+            for (let i = 1; i <= dInM; i++) {
+                const el = document.createElement('div'); el.classList.add('cal-day'); el.textContent = i;
+                if (i===today.getDate() && month===today.getMonth() && year===today.getFullYear()) el.classList.add('today');
+                if (i===selectedCalDate.getDate() && month===selectedCalDate.getMonth() && year===selectedCalDate.getFullYear()) el.classList.add('active');
+                el.onclick = function() {
+                    document.querySelectorAll('.cal-day').forEach(d => d.classList.remove('active'));
+                    el.classList.add('active'); selectedCalDate = new Date(year, month, i); showEventsForDate(selectedCalDate);
+                };
+                cDays.appendChild(el);
+            }
+        }
+        function showEventsForDate(date) {
+            const cont = document.getElementById('events-list-container'); cont.innerHTML = "";
+            const key = date.toISOString().split('T')[0];
+            const dStr = date.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' });
+            document.getElementById('selected-date-text').textContent = dStr.charAt(0).toUpperCase() + dStr.slice(1);
+            const evs = myEvents[key];
+            if (evs && evs.length > 0) {
+                evs.forEach(evt => {
+                    cont.innerHTML += `<div class="event-card"><div class="event-time">${evt.time}</div><div class="event-name">${evt.title}</div><div class="event-desc">${evt.desc}</div></div>`;
+                });
+            } else { cont.innerHTML = `<div class="no-event">Rien prévu</div>`; }
+        }
+        initCalendar();
+
+        // --- 3. MÉTÉO ---
         function fetchWeather() {
             const url = "https://api.open-meteo.com/v1/forecast?latitude=47.20&longitude=-0.99&current=temperature_2m,is_day,precipitation,weather_code&hourly=temperature_2m,precipitation_probability,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,precipitation_probability_max&timezone=Europe%2FParis";
-
-            const xhr = new XMLHttpRequest();
-            xhr.open("GET", url);
-            xhr.onload = function() {
-                if (xhr.status === 200) {
-                    const data = JSON.parse(xhr.responseText);
-                    updateWeatherUI(data);
-                }
-            };
-            xhr.send();
+            const xhr = new XMLHttpRequest(); xhr.open("GET", url);
+            xhr.onload = function() { if (xhr.status === 200) updateWeatherUI(JSON.parse(xhr.responseText)); }; xhr.send();
         }
-
-        // CODES WMO
-        function getWeatherIcon(code, isDay) {
-            const icons = {
-                0: "☀️", 1: "🌤", 2: "☁️", 3: "☁️",
-                45: "🌫", 48: "🌫", 51: "🌦", 53: "🌧", 55: "🌧",
-                61: "🌧", 63: "🌧", 65: "🌧", 71: "❄️", 73: "❄️", 75: "❄️",
-                80: "🌦", 81: "🌧", 82: "⛈", 95: "⚡️", 96: "⛈", 99: "⛈"
-            };
-            let icon = icons[code] || "❓";
-            if (!isDay && (code === 0 || code === 1)) icon = "🌙";
-            return icon;
+        function getIcon(c, d) {
+            const i = { 0: "☀️", 1: "🌤", 2: "☁️", 3: "☁️", 45: "🌫", 51: "🌦", 61: "🌧", 71: "❄️", 95: "⚡️" };
+            let ic = i[c] || "❓"; if (!d && (c === 0 || c === 1)) ic = "🌙"; return ic;
         }
-        const descs = { 0:"Ensoleillé", 1:"Peu nuageux", 2:"Nuageux", 3:"Couvert", 45:"Brouillard", 61:"Pluie", 80:"Averses", 95:"Orage" };
-        
-        function getWeatherDesc(code) { return descs[code] || "Variable"; }
-
         function updateWeatherUI(data) {
-            const current = data.current;
-            const daily = data.daily;
-            const hourly = data.hourly;
-
-            // A. METEO ACTUELLE
-            document.getElementById('curr-temp').textContent = Math.round(current.temperature_2m) + "°";
-            document.getElementById('curr-icon').textContent = getWeatherIcon(current.weather_code, current.is_day);
-            document.getElementById('curr-desc').textContent = getWeatherDesc(current.weather_code);
-            document.getElementById('rain-risk').textContent = "💧 " + daily.precipitation_probability_max[0] + "%";
-            document.getElementById('moon-phase').textContent = getMoonPhase();
-
-            // B. 5 PROCHAINES HEURES
-            const hContainer = document.getElementById('hourly-container');
-            hContainer.innerHTML = "";
-            const currentHourIndex = new Date().getHours();
-            
-            for(let i = 0; i < 5; i++) {
-                let index = currentHourIndex + i; 
-                if(index > 23) index = index - 24; 
-
-                const hTemp = Math.round(hourly.temperature_2m[index]);
-                const hIcon = getWeatherIcon(hourly.weather_code[index], 1); 
-                const timeLabel = index + "h";
-
-                hContainer.innerHTML += `
-                <div class="hour-col">
-                    <span class="hc-time">${timeLabel}</span>
-                    <span class="hc-icon">${hIcon}</span>
-                    <span class="hc-temp">${hTemp}°</span>
-                </div>`;
+            const c = data.current; const d = data.daily; const h = data.hourly;
+            document.getElementById('curr-temp').textContent = Math.round(c.temperature_2m) + "°";
+            document.getElementById('curr-icon').textContent = getIcon(c.weather_code, c.is_day);
+            document.getElementById('curr-desc').textContent = {0:"Ensoleillé", 1:"Variable", 2:"Nuageux", 3:"Couvert", 61:"Pluie"}[c.weather_code] || "Variable";
+            document.getElementById('rain-risk').textContent = "💧 " + d.precipitation_probability_max[0] + "%";
+            document.getElementById('moon-phase').textContent = "🌑 Lune";
+            const hCont = document.getElementById('hourly-container'); hCont.innerHTML = "";
+            const curH = new Date().getHours();
+            for(let i=0; i<5; i++) {
+                let idx = curH + i; if(idx>23) idx-=24;
+                hCont.innerHTML += `<div class="hour-col"><span class="hc-time">${idx}h</span><span class="hc-icon">${getIcon(h.weather_code[idx], 1)}</span><span class="hc-temp">${Math.round(h.temperature_2m[idx])}°</span></div>`;
             }
-
-            // C. CYCLE SOLEIL
-            const sunrise = new Date(daily.sunrise[0]);
-            const sunset = new Date(daily.sunset[0]);
-            const now = new Date();
-            
-            const formatTime = (date) => date.toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit'});
-            document.getElementById('sunrise').textContent = "Lever " + formatTime(sunrise);
-            document.getElementById('sunset').textContent = "Coucher " + formatTime(sunset);
-
-            let percent = 0;
-            if (now > sunset) percent = 100;
-            else if (now < sunrise) percent = 0;
-            else {
-                const totalMinutes = (sunset - sunrise);
-                const currentMinutes = (now - sunrise);
-                percent = (currentMinutes / totalMinutes) * 100;
-            }
-            document.getElementById('sun-progress').style.width = percent + "%";
-
-
-            // D. 5 PROCHAINS JOURS (MODIFIÉ POUR MATIN / APREM)
-            const dContainer = document.getElementById('daily-container');
-            dContainer.innerHTML = "";
-            
-            for(let i = 1; i <= 5; i++) {
-                const dateObj = new Date(daily.time[i]);
+            const sr = new Date(d.sunrise[0]); const ss = new Date(d.sunset[0]); const now = new Date();
+            const ft = (dt) => dt.toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit'});
+            document.getElementById('sunrise').textContent = "Lever " + ft(sr); document.getElementById('sunset').textContent = "Coucher " + ft(ss);
+            let pct = 0; if (now > ss) pct = 100; else if (now > sr) { pct = ((now - sr) / (ss - sr)) * 100; }
+            document.getElementById('sun-progress').style.width = pct + "%";
+            const dCont = document.getElementById('daily-container'); dCont.innerHTML = "";
+            for(let i=1; i<=5; i++) {
+                const dateObj = new Date(d.time[i]);
                 const dayName = dateObj.toLocaleDateString('fr-FR', {weekday:'short'});
                 const dateNum = dateObj.getDate();
-                
-                const dIcon = getWeatherIcon(daily.weather_code[i], 1);
-                // On considère Min = Matin et Max = Aprem
-                const minT = Math.round(daily.temperature_2m_min[i]);
-                const maxT = Math.round(daily.temperature_2m_max[i]);
-
-                dContainer.innerHTML += `
-                <div class="day-row">
-                    <span class="dr-name">${dayName}.</span>
-                    <span class="dr-date">${dateNum}</span>
-                    
-                    <span class="dr-icon">${dIcon}</span>
-                    
-                    <div class="dr-temps">
-                        <div class="temp-line">Matin: <span class="temp-val">${minT}°</span></div>
-                        <div class="temp-line">Aprem: <span class="temp-val">${maxT}°</span></div>
-                    </div>
-                </div>`;
+                const dIcon = getIcon(d.weather_code[i], 1);
+                dCont.innerHTML += `<div class="day-row"><span class="dr-name">${dayName}.</span><span class="dr-date">${dateNum}</span><span class="dr-icon">${dIcon}</span><div class="dr-temps"><div class="temp-line">Matin: <span class="temp-val">${Math.round(d.temperature_2m_min[i])}°</span></div><div class="temp-line">Aprem: <span class="temp-val">${Math.round(d.temperature_2m_max[i])}°</span></div></div></div>`;
             }
         }
-
-        function getMoonPhase() {
-            const date = new Date();
-            const daysSinceNew = (date.getTime() - new Date(2023, 0, 21).getTime()) / 86400000 % 29.53;
-            if (daysSinceNew < 3.7) return "🌑 Nouv.";
-            if (daysSinceNew < 7.4) return "🌒 Mont.";
-            if (daysSinceNew < 11.1) return "🌓 1er Q";
-            if (daysSinceNew < 14.8) return "🌔 Gibb.";
-            if (daysSinceNew < 18.5) return "🌕 Pleine";
-            if (daysSinceNew < 22.2) return "🌖 Gibb.";
-            if (daysSinceNew < 25.9) return "🌗 Dern Q";
-            return "🌘 Desc.";
-        }
-
-        fetchWeather();
-        setInterval(fetchWeather, 1800000);
-
+        fetchWeather(); setInterval(fetchWeather, 1800000);
     </script>
 </body>
 </html>
