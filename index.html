@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Maison Dashboard</title>
+    <meta http-equiv="refresh" content="900"> 
+    <style>
+        body {
+            background-color: #000; /* Fond noir pour économiser l'écran/batterie */
+            color: #fff;
+            font-family: -apple-system, Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr; /* 2 colonnes */
+            grid-template-rows: auto 1fr;
+            height: 95vh;
+            gap: 20px;
+        }
+
+        /* --- BLOC HEURE --- */
+        .header {
+            grid-column: 1 / -1; /* Prend toute la largeur */
+            text-align: center;
+            border-bottom: 2px solid #333;
+            padding-bottom: 20px;
+        }
+        #clock { font-size: 80px; font-weight: bold; }
+        #date { font-size: 30px; color: #aaa; }
+
+        /* --- BLOCS COMMUNS --- */
+        .card {
+            background: #1c1c1e;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        h2 { margin-top: 0; color: #888; font-size: 20px; text-transform: uppercase;}
+
+        /* --- EDF TEMPO --- */
+        .edf-img {
+            width: 150px;
+            height: 150px;
+            object-fit: contain;
+            border-radius: 50%; /* Rond */
+        }
+
+        /* --- SOLAIRE (IFRAME) --- */
+        .solar-frame {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: white; /* Souvent les apps solaires sont sur fond blanc */
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div id="clock">00:00</div>
+        <div id="date">Chargement...</div>
+    </div>
+
+    <div class="card">
+        <h2>Électricité (Tempo)</h2>
+        <img src="https://tempo.myelec.fr/img/tempo-today.png" class="edf-img" alt="Couleur EDF">
+        <br><br>
+        <hr style="width:50%; border-color:#333;">
+        <br>
+        <h2>Météo</h2>
+        <a class="weatherwidget-io" href="https://forecast7.com/fr/48d862d35/paris/" data-label_1="MA MAISON" data-label_2="Météo" data-theme="dark" >MA MAISON Météo</a>
+        <script>
+        !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src='https://weatherwidget.io/js/widget.min.js';fjs.parentNode.insertBefore(js,fjs);}}(document,'script','weatherwidget-io-js');
+        </script>
+    </div>
+
+    <div class="card">
+        <h2>Production Solaire</h2>
+        <iframe class="solar-frame" src="https://enlighten.enphaseenergy.com/pv/public_systems/YOUR_ID/overview"></iframe>
+        <p style="font-size:12px; color:#555;">Si ça ne s'affiche pas, vérifiez le lien public de votre onduleur.</p>
+    </div>
+
+    <script>
+        // SCRIPT POUR L'HORLOGE
+        function updateClock() {
+            var now = new Date();
+            var hours = String(now.getHours()).padStart(2, '0');
+            var minutes = String(now.getMinutes()).padStart(2, '0');
+            var dayOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            
+            document.getElementById('clock').textContent = hours + ":" + minutes;
+            document.getElementById('date').textContent = now.toLocaleDateString('fr-FR', dayOptions);
+        }
+        setInterval(updateClock, 1000); // Mise à jour chaque seconde
+        updateClock();
+    </script>
+
+</body>
+</html>
