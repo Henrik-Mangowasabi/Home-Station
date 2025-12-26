@@ -1,139 +1,86 @@
+<!DOCTYPE html>
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Maison</title>
+    <title>Maison Dashboard</title>
     
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black"> 
-    
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    
-    <meta http-equiv="refresh" content="900"> 
-    
-    <style>
+    <meta http-equiv="refresh" content="900"> <style>
+        /* --- DESIGN GÉNÉRAL --- */
         body {
-            /* 3. On enlève le padding du haut car la barre noire pousse déjà le contenu */
-            padding-top: 0px; 
             background-color: #000;
             color: #fff;
             font-family: -apple-system, Helvetica, Arial, sans-serif;
             margin: 0;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            height: 95vh; /* On garde une marge de sécu */
-            gap: 20px;
+            padding: 15px;
+            height: 96vh; /* Prend toute la hauteur de l'écran */
+            display: grid;
+            gap: 15px; /* Espace entre les cases */
+            
+            /* --- LA GRILLE MAGIQUE (Selon ton dessin) --- */
+            /* 2 Colonnes, 3 Lignes */
+            grid-template-columns: 1fr 1fr; /* 50% gauche, 50% droite */
+            grid-template-rows: 150px 1fr 1fr; /* Ligne du haut fixe, le reste s'adapte */
+            
+            /* On nomme les zones pour placer les éléments */
+            grid-template-areas:
+                "meteo heure"
+                "tempo agenda"
+                "conso agenda";
         }
 
-        /* --- BLOC HEURE --- */
-        .header {
+        /* --- STYLE DES BOITES (Temporaire : bordures colorées pour tester) --- */
+        .box {
+            background-color: #1c1c1e; /* Gris foncé Apple */
+            border-radius: 20px;
+            padding: 15px;
             text-align: center;
-            border-bottom: 2px solid #333;
-            padding-bottom: 20px;
-            flex-shrink: 0;
-        }
-        #clock { font-size: 80px; font-weight: bold; }
-        #date { font-size: 30px; color: #aaa; }
-
-        /* --- CONTENEUR PRINCIPAL --- */
-        .main-content {
-            display: flex;
-            flex: 1;
-            gap: 20px;
-            height: 100%;
-        }
-
-        /* --- BLOCS COMMUNS --- */
-        .card {
-            background: #1c1c1e;
-            border-radius: 15px;
-            padding: 20px;
-            text-align: center;
-            flex: 1; /* Chaque colonne prend 50% */
+            border: 2px dashed #555; /* Pointillés pour visualiser */
             display: flex;
             flex-direction: column;
-            align-items: center;
-            overflow: hidden; /* Empêche ce qui dépasse de casser le design */
-        }
-        h2 { margin-top: 0; color: #888; font-size: 18px; text-transform: uppercase; margin-bottom: 15px;}
-
-        /* --- EDF TEMPO --- */
-        .edf-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
             justify-content: center;
-            flex: 1;
-            width: 100%;
-        }
-        .edf-img {
-            max-width: 120px;
-            height: auto;
-            border-radius: 50%;
-            border: 2px solid #555;
+            align-items: center;
         }
 
-        /* --- METEO --- */
-        .weather-container {
-            width: 100%;
-            margin-top: auto; /* Pousse la météo vers le bas */
-        }
+        /* --- PLACEMENT DES ÉLÉMENTS --- */
+        .zone-meteo { grid-area: meteo; border-color: yellow; }
+        .zone-heure { grid-area: heure; border-color: cyan; }
+        .zone-tempo { grid-area: tempo; border-color: blue; }
+        .zone-conso { grid-area: conso; border-color: green; }
+        .zone-agenda { grid-area: agenda; border-color: red; }
 
-        /* --- SOLAIRE (IFRAME) --- */
-        .solar-frame {
-            width: 100%;
-            height: 100%;
-            border: none;
-            background: white;
-            border-radius: 10px;
-        }
+        h2 { margin: 0 0 10px 0; font-size: 18px; color: #aaa; text-transform: uppercase;}
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <div id="clock">00:00</div>
-        <div id="date">Chargement...</div>
+    <div class="box zone-meteo">
+        <h2>Météo (Ici le Soleil)</h2>
     </div>
 
-    <div class="main-content">
-        <div class="card">
-            <h2>Électricité (Tempo)</h2>
-            
-            <div class="edf-container">
-                <img src="https://tempo.myelec.fr/img/tempo-today.png" class="edf-img" alt="Image Tempo">
-                <p style="font-size: 12px; color: #666; margin-top:10px;">Couleur du jour</p>
-            </div>
-
-            <hr style="width:80%; border-color:#333; margin: 20px 0;">
-
-            <div class="weather-container">
-                <h2>Météo</h2>
-                <a class="weatherwidget-io" href="https://forecast7.com/fr/48d862d35/paris/" data-label_1="MA MAISON" data-label_2="Météo" data-theme="dark" >CHARGEMENT METEO...</a>
-                <script>
-                !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src='https://weatherwidget.io/js/widget.min.js';fjs.parentNode.insertBefore(js,fjs);}}(document,'script','weatherwidget-io-js');
-                </script>
-            </div>
-        </div>
-
-        <div class="card">
-            <h2>Production Solaire</h2>
-            <iframe class="solar-frame" src="https://fr.wikipedia.org/wiki/Panneau_solaire"></iframe>
-            <p style="font-size:12px; color:#555; margin-top:5px;">Si gris : le site solaire bloque l'accès.</p>
-        </div>
+    <div class="box zone-heure">
+        <h2>17h42</h2>
+        <p>Vendredi 26 Décembre</p>
     </div>
 
-    <script>
-        function updateClock() {
-            var now = new Date();
-            var hours = String(now.getHours()).padStart(2, '0');
-            var minutes = String(now.getMinutes()).padStart(2, '0');
-            var dayOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            document.getElementById('clock').textContent = hours + ":" + minutes;
-            document.getElementById('date').textContent = now.toLocaleDateString('fr-FR', dayOptions);
-        }
-        setInterval(updateClock, 1000);
-        updateClock();
-    </script>
+    <div class="box zone-tempo">
+        <h2>Tempo (EDF)</h2>
+        <p>Bleu / Blanc / Rouge</p>
+    </div>
+
+    <div class="box zone-conso">
+        <h2>Conso Électrique</h2>
+        <p>Graphique Solaire</p>
+    </div>
+
+    <div class="box zone-agenda">
+        <h2>Agenda</h2>
+        <p>Rendez-vous 1...</p>
+        <p>Rendez-vous 2...</p>
+        <p>Rendez-vous 3...</p>
+    </div>
 
 </body>
 </html>
