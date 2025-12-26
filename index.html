@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Dashboard Maison</title>
+    <title>Home Dashboard</title>
     
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
@@ -10,139 +10,172 @@
     <meta http-equiv="refresh" content="900">
 
     <style>
-        /* --- DESIGN GÉNÉRAL --- */
+        /* --- STRUCTURE GÉNÉRALE (GRILLE) --- */
         body {
-            background-color: #000;
+            background-color: #000; /* Fond noir */
             color: #fff;
             font-family: -apple-system, Helvetica, Arial, sans-serif;
             margin: 0;
             padding: 15px;
-            height: 96vh; /* Toute la hauteur */
-            display: flex; /* On active les colonnes */
-            gap: 15px; /* Espace entre les colonnes */
-            overflow: hidden;
-        }
-
-        /* --- LES 3 COLONNES --- */
-        .column {
-            display: flex;
-            flex-direction: column;
+            height: 96vh; /* Prend toute la hauteur */
+            display: grid;
             gap: 15px;
-            flex: 1; /* Chaque colonne fait 33% de la largeur */
+            /* DEFINITION DE LA GRILLE : 2 Colonnes (1/3 et 2/3) */
+            grid-template-columns: 1fr 2fr; 
+            grid-template-rows: 1fr 1fr 1fr; /* 3 lignes pour la droite */
+            /* DESSIN DES ZONES */
+            grid-template-areas:
+                "left-panel  agenda-panel"
+                "left-panel  tempo-panel"
+                "left-panel  conso-panel";
         }
 
-        /* --- STYLE DES BOITES --- */
+        /* --- STYLE DES PANNEAUX --- */
         .card {
-            background-color: #1c1c1e;
-            border-radius: 20px;
+            background-color: #1c1c1e; /* Gris foncé Apple */
+            border-radius: 25px; /* Angles très arrondis comme sur le dessin */
             padding: 20px;
-            text-align: center;
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            align-items: center;
+            overflow: hidden;
             position: relative;
         }
-
-        h2 { margin: 0 0 10px 0; font-size: 16px; color: #888; text-transform: uppercase; letter-spacing: 1px; }
-
-        /* --- RÉGLAGES SPÉCIFIQUES --- */
         
-        /* COLONNE GAUCHE */
-        .weather-week { flex: 2; } /* Prend plus de place */
-        .conso { flex: 1; }       /* Prend moins de place */
+        h2 { 
+            margin: 0 0 15px 0; 
+            font-size: 20px; 
+            font-weight: normal;
+            text-align: center;
+            width: 100%;
+        }
 
-        /* COLONNE MILIEU */
-        .weather-now { flex: 1; }
-        .tempo { flex: 1; }
-        /* Pour l'image Tempo */
-        .tempo-img { width: 80px; height: 80px; border-radius: 50%; border: 2px solid #555; margin-bottom: 10px; }
-        .tempo-info { font-size: 14px; color: #aaa; text-align: left; line-height: 1.5; }
+        /* --- PLACEMENT DES ZONES --- */
+        .panel-left { 
+            grid-area: left-panel; 
+            align-items: center; /* Centre le contenu horizontalement */
+            padding: 30px 15px;
+        }
+        .panel-agenda { 
+            grid-area: agenda-panel;
+        }
+        .panel-tempo { 
+            grid-area: tempo-panel;
+            align-items: center;
+            justify-content: center;
+        }
+        .panel-conso { 
+            grid-area: conso-panel;
+        }
 
-        /* COLONNE DROITE */
-        .clock-box { flex: 0.5; } /* Petite boite pour l'heure */
-        .agenda { flex: 2; align-items: flex-start; text-align: left; } /* Grande boite agenda */
+        /* --- DÉTAILS GAUCHE (Heure/Météo) --- */
+        #time { font-size: 60px; font-weight: bold; line-height: 1; margin-bottom: 5px;}
+        #date { font-size: 18px; color: #aaa; margin-bottom: 30px; }
+        
+        /* Le conteneur du widget météo pour qu'il prenne toute la place restante */
+        .weather-container {
+            flex: 1;
+            width: 100%;
+            display: flex;
+            border-top: 1px solid #333;
+            padding-top: 20px;
+        }
 
-        /* CONTENU HEURE */
-        #time { font-size: 50px; font-weight: bold; line-height: 1; }
-        #date { font-size: 18px; color: #aaa; margin-top: 5px; }
+        /* --- DÉTAILS DROITE MILIEU (Tempo) --- */
+        .tempo-circles-container {
+            display: flex;
+            gap: 20px;
+            margin-top: 10px;
+        }
+        .tempo-circle {
+            width: 60px; height: 60px;
+            border-radius: 50%;
+            display: flex; justify-content: center; align-items: center;
+            font-weight: bold; font-size: 18px;
+            border: 3px solid #333;
+        }
+        /* Couleurs des cercles Tempo */
+        .t-blue { background-color: #007aff; color: white; }
+        .t-white { background-color: #f2f2f7; color: black; }
+        .t-red { background-color: #ff3b30; color: white; }
 
-        /* IFRAMES (Météo/Solaire) */
-        .widget-frame { width: 100%; height: 100%; border: none; border-radius: 10px; }
+        /* --- DÉTAILS DROITE BAS (Solaire) --- */
+        .solar-frame { width: 100%; height: 100%; border: none; border-radius: 15px; opacity: 0.7; }
+        .placeholder-text { position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); color:#aaa;}
+
+        /* --- DÉTAILS DROITE HAUT (Agenda Imitation) --- */
+        /* C'est du faux style pour imiter ton dessin */
+        .fake-calendar-layout { display: flex; gap: 15px; height: 100%; }
+        .fake-events { flex: 1; display: flex; flex-direction: column; gap: 10px; }
+        .fake-event-block { background-color: #3a3a3c; padding: 10px; border-radius: 10px; font-size: 14px;}
+        .fake-purple { background-color: #5e5ce6; color: white; }
+        .fake-grid { flex: 1; display: grid; grid-template-columns: repeat(7, 1fr); font-size: 10px; color: #777; text-align: center; align-content: start; gap: 5px;}
+        .fake-day { padding: 5px; }
+        .fake-today { background-color: #0a84ff; color: white; border-radius: 50%; }
 
     </style>
 </head>
 <body>
 
-    <div class="column">
-        <div class="card weather-week">
-            <h2>Semaine</h2>
-            <a class="weatherwidget-io" href="https://forecast7.com/fr/48d862d35/paris/" data-label_1="SEMAINE" data-label_2="Météo" data-theme="dark" data-days="5" >SEMAINE Météo</a>
+    <div class="card panel-left">
+        <div id="time">--:--</div>
+        <div id="date">...</div>
+        
+        <div class="weather-container">
+             <a class="weatherwidget-io" href="https://forecast7.com/fr/47d47n0d56/angers/" data-label_1="ANGERS" data-theme="dark" data-basecolor="" data-accent="" data-textcolor="#ffffff" data-highcolor="#ff3b30" data-lowcolor="#0a84ff" data-suncolor="#ffcc00" data-cloudfill="" data-raincolor="" data-snowcolor="" data-mode="Current+Forecast" data-days="5" data-palette="gray">Météo Angers</a>
             <script>
             !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src='https://weatherwidget.io/js/widget.min.js';fjs.parentNode.insertBefore(js,fjs);}}(document,'script','weatherwidget-io-js');
             </script>
         </div>
-
-        <div class="card conso">
-            <h2>Conso Élec</h2>
-            <div style="font-size: 40px;">⚡️</div>
-            <p style="color:#666; font-size:12px;">Graphique Conso</p>
-        </div>
     </div>
 
 
-    <div class="column">
-        <div class="card weather-now">
-            <h2>Aujourd'hui</h2>
-            <div style="font-size: 50px;">☀️</div>
-            <div style="font-size: 40px; font-weight:bold;">3°C</div>
-            <div style="color:#aaa;">Ciel Dégagé</div>
-        </div>
-
-        <div class="card tempo">
-            <h2>Tempo (EDF)</h2>
-            <img src="https://tempo.myelec.fr/img/tempo-today.png" class="tempo-img" alt="Tempo">
-            <div class="tempo-info">
-                🔵 Bleu: 12h<br>
-                ⚪️ Blanc: 16h<br>
-                🔴 Rouge: 24h
+    <div class="card panel-agenda">
+        <div class="fake-calendar-layout">
+            <div class="fake-events">
+                <div class="fake-event-block fake-purple">Meeting<br>14:00 - 16:00</div>
+                <div style="font-size:12px; color:#aaa; margin-top:5px;">DEMAIN</div>
+                <div class="fake-event-block fake-purple" style="opacity:0.7;">Projet X...</div>
+            </div>
+            <div class="fake-grid">
+                <div>L</div><div>M</div><div>M</div><div>J</div><div>V</div><div>S</div><div>D</div>
+                <div>1</div><div>2</div><div>3</div><div>4</div><div>5</div><div>6</div><div>7</div>
+                <div>8</div><div>9</div><div>10</div><div>11</div><div>12</div><div>13</div><div>14</div>
+                <div>15</div><div>16</div><div>17</div><div>18</div><div>19</div><div>20</div><div>21</div>
+                <div>22</div><div>23</div><div>24</div><div>25</div><div class="fake-today">26</div><div>27</div><div>28</div>
             </div>
         </div>
     </div>
 
 
-    <div class="column">
-        <div class="card clock-box">
-            <div id="time">00:00</div>
-            <div id="date">...</div>
+    <div class="card panel-tempo">
+        <h2>Tempo</h2>
+        <div class="tempo-circles-container">
+            <div class="tempo-circle t-blue">12</div>
+            <div class="tempo-circle t-white">12</div>
+            <div class="tempo-circle t-red">12</div>
         </div>
-
-        <div class="card agenda">
-            <h2 style="width:100%; text-align:center;">Agenda</h2>
-            <ul style="list-style: none; padding: 0; width: 100%;">
-                <li style="padding: 10px 0; border-bottom: 1px solid #333;">
-                    <span style="color: #0a84ff; font-weight:bold;">13:00</span> Déjeuner
-                </li>
-                <li style="padding: 10px 0; border-bottom: 1px solid #333;">
-                    <span style="color: #0a84ff; font-weight:bold;">14:30</span> Réunion
-                </li>
-                <li style="padding: 10px 0; border-bottom: 1px solid #333;">
-                    <span style="color: #0a84ff; font-weight:bold;">18:00</span> Sport
-                </li>
-            </ul>
-        </div>
+        <p style="font-size: 12px; color: #777; margin-top: 10px;">Jours restants (Exemple)</p>
     </div>
 
+
+    <div class="card panel-conso">
+        <h2>Consomation Electrique</h2>
+        <iframe class="solar-frame" src="https://fr.wikipedia.org/wiki/Panneau_solaire"></iframe>
+        <div class="placeholder-text">Graphique Solaire</div>
+    </div>
+
+
     <script>
-        /* SCRIPT HORLOGE */
+        /* --- SCRIPT HORLOGE --- */
         function updateClock() {
             var now = new Date();
-            var hours = String(now.getHours()).padStart(2, '0');
-            var minutes = String(now.getMinutes()).padStart(2, '0');
-            var dayOptions = { weekday: 'long', day: 'numeric', month: 'long' };
-            
-            document.getElementById('time').textContent = hours + ":" + minutes;
-            document.getElementById('date').textContent = now.toLocaleDateString('fr-FR', dayOptions);
+            document.getElementById('time').textContent = String(now.getHours()).padStart(2, '0') + ":" + String(now.getMinutes()).padStart(2, '0');
+            // Format de date : "Vendredi 26 Décembre"
+            var options = { weekday: 'long', day: 'numeric', month: 'long' };
+            // On met la première lettre en majuscule
+            var dateStr = now.toLocaleDateString('fr-FR', options);
+            dateStr = dateStr.charAt(0).toUpperCase() + dateStr.slice(1);
+            document.getElementById('date').textContent = dateStr;
         }
         setInterval(updateClock, 1000);
         updateClock();
