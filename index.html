@@ -4,29 +4,38 @@
     <meta charset="UTF-8">
     <title>Maison Dashboard</title>
     <meta http-equiv="refresh" content="900"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
     <style>
         body {
-            background-color: #000; /* Fond noir pour économiser l'écran/batterie */
+            background-color: #000;
             color: #fff;
             font-family: -apple-system, Helvetica, Arial, sans-serif;
             margin: 0;
             padding: 20px;
-            display: grid;
-            grid-template-columns: 1fr 1fr; /* 2 colonnes */
-            grid-template-rows: auto 1fr;
+            display: flex; /* Changement pour mieux gérer l'espace */
+            flex-direction: column;
             height: 95vh;
             gap: 20px;
         }
 
         /* --- BLOC HEURE --- */
         .header {
-            grid-column: 1 / -1; /* Prend toute la largeur */
             text-align: center;
             border-bottom: 2px solid #333;
             padding-bottom: 20px;
+            flex-shrink: 0;
         }
         #clock { font-size: 80px; font-weight: bold; }
         #date { font-size: 30px; color: #aaa; }
+
+        /* --- CONTENEUR PRINCIPAL --- */
+        .main-content {
+            display: flex;
+            flex: 1;
+            gap: 20px;
+            height: 100%;
+        }
 
         /* --- BLOCS COMMUNS --- */
         .card {
@@ -34,19 +43,34 @@
             border-radius: 15px;
             padding: 20px;
             text-align: center;
+            flex: 1; /* Chaque colonne prend 50% */
             display: flex;
             flex-direction: column;
-            justify-content: center;
             align-items: center;
+            overflow: hidden; /* Empêche ce qui dépasse de casser le design */
         }
-        h2 { margin-top: 0; color: #888; font-size: 20px; text-transform: uppercase;}
+        h2 { margin-top: 0; color: #888; font-size: 18px; text-transform: uppercase; margin-bottom: 15px;}
 
         /* --- EDF TEMPO --- */
+        .edf-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+            width: 100%;
+        }
         .edf-img {
-            width: 150px;
-            height: 150px;
-            object-fit: contain;
-            border-radius: 50%; /* Rond */
+            max-width: 120px;
+            height: auto;
+            border-radius: 50%;
+            border: 2px solid #555;
+        }
+
+        /* --- METEO --- */
+        .weather-container {
+            width: 100%;
+            margin-top: auto; /* Pousse la météo vers le bas */
         }
 
         /* --- SOLAIRE (IFRAME) --- */
@@ -54,7 +78,7 @@
             width: 100%;
             height: 100%;
             border: none;
-            background: white; /* Souvent les apps solaires sont sur fond blanc */
+            background: white;
             border-radius: 10px;
         }
     </style>
@@ -66,37 +90,43 @@
         <div id="date">Chargement...</div>
     </div>
 
-    <div class="card">
-        <h2>Électricité (Tempo)</h2>
-        <img src="https://tempo.myelec.fr/img/tempo-today.png" class="edf-img" alt="Couleur EDF">
-        <br><br>
-        <hr style="width:50%; border-color:#333;">
-        <br>
-        <h2>Météo</h2>
-        <a class="weatherwidget-io" href="https://forecast7.com/fr/48d862d35/paris/" data-label_1="MA MAISON" data-label_2="Météo" data-theme="dark" >MA MAISON Météo</a>
-        <script>
-        !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src='https://weatherwidget.io/js/widget.min.js';fjs.parentNode.insertBefore(js,fjs);}}(document,'script','weatherwidget-io-js');
-        </script>
-    </div>
+    <div class="main-content">
+        <div class="card">
+            <h2>Électricité (Tempo)</h2>
+            
+            <div class="edf-container">
+                <img src="https://tempo.myelec.fr/img/tempo-today.png" class="edf-img" alt="Image Tempo">
+                <p style="font-size: 12px; color: #666; margin-top:10px;">Couleur du jour</p>
+            </div>
 
-    <div class="card">
-        <h2>Production Solaire</h2>
-        <iframe class="solar-frame" src="https://enlighten.enphaseenergy.com/pv/public_systems/YOUR_ID/overview"></iframe>
-        <p style="font-size:12px; color:#555;">Si ça ne s'affiche pas, vérifiez le lien public de votre onduleur.</p>
+            <hr style="width:80%; border-color:#333; margin: 20px 0;">
+
+            <div class="weather-container">
+                <h2>Météo</h2>
+                <a class="weatherwidget-io" href="https://forecast7.com/fr/48d862d35/paris/" data-label_1="MA MAISON" data-label_2="Météo" data-theme="dark" >CHARGEMENT METEO...</a>
+                <script>
+                !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src='https://weatherwidget.io/js/widget.min.js';fjs.parentNode.insertBefore(js,fjs);}}(document,'script','weatherwidget-io-js');
+                </script>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Production Solaire</h2>
+            <iframe class="solar-frame" src="https://fr.wikipedia.org/wiki/Panneau_solaire"></iframe>
+            <p style="font-size:12px; color:#555; margin-top:5px;">Si gris : le site solaire bloque l'accès.</p>
+        </div>
     </div>
 
     <script>
-        // SCRIPT POUR L'HORLOGE
         function updateClock() {
             var now = new Date();
             var hours = String(now.getHours()).padStart(2, '0');
             var minutes = String(now.getMinutes()).padStart(2, '0');
             var dayOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            
             document.getElementById('clock').textContent = hours + ":" + minutes;
             document.getElementById('date').textContent = now.toLocaleDateString('fr-FR', dayOptions);
         }
-        setInterval(updateClock, 1000); // Mise à jour chaque seconde
+        setInterval(updateClock, 1000);
         updateClock();
     </script>
 
