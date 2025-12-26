@@ -111,8 +111,8 @@
         /* Jauges jours restants */
         .tempo-stats { display: flex; justify-content: space-between; background: #2c2c2e; padding: 10px 0; border-radius: 12px;}
         .stat-col { flex: 1; display: flex; flex-direction: column; align-items: center; margin: 0 10px; }
-        .stat-val { font-size: 14px; font-weight: bold; margin-bottom: 2px; }
-        .stat-total { font-size: 10px; color: #888; }
+        .stat-val { font-size: 14px; font-weight: bold; display: flex; justify-content: space-center; align-items: center;}
+        .stat-total { font-size: 10px; color: #888; position: relative; top: 1px; padding-left: 5px; }
         .progress-bg { width: 100%; height: 4px; background: #444; border-radius: 2px; margin-top: 5px; overflow: hidden;}
         .progress-fill { height: 100%; border-radius: 2px; }
         
@@ -184,18 +184,15 @@
 
         <div class="tempo-stats">
             <div class="stat-col">
-                <div class="stat-val c-blue">195</div>
-                <div class="stat-total">/300</div>
+                <div class="stat-val c-blue">195<div class="stat-total">/300</div></div>
                 <div class="progress-bg"><div class="progress-fill bg-blue" style="width: 65%;"></div></div>
             </div>
             <div class="stat-col">
-                <div class="stat-val c-white">31</div>
-                <div class="stat-total">/43</div>
+                <div class="stat-val c-white">31 <div class="stat-total">/43</div></div>
                 <div class="progress-bg"><div class="progress-fill bg-white" style="width: 72%;"></div></div>
             </div>
             <div class="stat-col">
-                <div class="stat-val c-red">22</div>
-                <div class="stat-total">/22</div>
+                <div class="stat-val c-red">22<div class="stat-total">/22</div></div>
                 <div class="progress-bg"><div class="progress-fill bg-red" style="width: 100%;"></div></div>
             </div>
         </div>
