@@ -127,10 +127,20 @@
         .cal-day-name { font-size: 10px; color: #888; padding-bottom: 4px; }
         .cal-day { aspect-ratio: 1; display: flex; justify-content: center; align-items: center; border-radius: 50%; font-size: 13px; cursor: pointer; position: relative; transition: 0.2s;}
         
-        .cal-day.today { box-shadow: 0 0 0 2px #5e5ce6; color: #fff; font-weight: bold;}
+        .cal-day.today::after {
+            content: '';
+            position: absolute;
+            left: 50%; top: 50%;
+            transform: translate(-50%, -50%);
+            width: 20px; height: 20px;
+            border-radius: 50%;
+            box-shadow: 0 0 0 2px #5e5ce6;
+            pointer-events: none;
+        }
+        .cal-day.today { color: #fff; font-weight: bold; z-index: 1; }
         .cal-day.active { background-color: #5e5ce6; color: #fff; border: none; font-weight: bold;}
-        .cal-day.has-event::after { content: ''; position: absolute; bottom: 4px; width: 4px; height: 4px; background-color: #fff; border-radius: 50%; left: 50%; transform: translateX(-50%); }
-        .cal-day:not(.active).has-event::after { background-color: #5e5ce6; transform: translateX(-50%); }
+        .cal-day.has-event::before { content: ''; position: absolute; bottom: 4px; width: 4px; height: 4px; background-color: #fff; border-radius: 50%; left: 50%; transform: translateX(-50%); }
+        .cal-day:not(.active).has-event::before { background-color: #5e5ce6; transform: translateX(-50%); }
         .cal-day.empty { pointer-events: none; }
 
         /* --- 5. TEMPO (RESTAURÉ COMME AVANT) --- */
