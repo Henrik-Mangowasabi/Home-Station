@@ -122,7 +122,8 @@
         .cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: 16px; font-weight: bold; text-transform: uppercase; color: #ddd; }
         .nav-arrow { cursor: pointer; padding: 0 15px; color: #5e5ce6; font-size: 24px; user-select: none;}
         
-        .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); grid-gap: 3px; text-align: center; height: 75%; }
+        .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); grid-gap: 3px; text-align: center; }
+        .cal-days-container { height: 75%; }
         .cal-day-name { font-size: 10px; color: #888; padding-bottom: 4px; }
         .cal-day { aspect-ratio: 1; display: flex; justify-content: center; align-items: center; border-radius: 50%; font-size: 13px; cursor: pointer; position: relative; transition: 0.2s;}
         
@@ -244,7 +245,7 @@
                 <span class="nav-arrow" onclick="changeMonth(1)">&#10095;</span>
             </div>
             <div class="cal-grid"><div class="cal-day-name">L</div><div class="cal-day-name">M</div><div class="cal-day-name">M</div><div class="cal-day-name">J</div><div class="cal-day-name">V</div><div class="cal-day-name">S</div><div class="cal-day-name">D</div></div>
-            <div class="cal-grid" id="cal-days-container"></div>
+            <div class="cal-grid cal-days-container" id="cal-days-container"></div>
         </div>
     </div>
 
