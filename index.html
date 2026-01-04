@@ -38,7 +38,7 @@
 
         /* --- 2. BOITES (EFFET VERRE) --- */
         .card { 
-            background-color: rgba(28, 28, 30, 0.85); /* Fond foncé pour lisibilité */
+            background-color: rgba(28, 28, 30, 0.85);
             backdrop-filter: blur(5px); 
             -webkit-backdrop-filter: blur(5px);
             border-radius: 20px; 
@@ -54,7 +54,13 @@
         /* --- 3. GAUCHE (METEO) --- */
         .panel-left { grid-area: panel-left; }
 
-        .header-time { text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px; margin-bottom: 20px; }
+        .header-time { text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px; margin-bottom: 20px; position: relative; }
+        
+        .refresh-icon {
+            position: absolute; top: 5px; right: 10px; font-size: 24px; cursor: pointer; color: #5e5ce6; opacity: 0.7; transition: 0.3s; user-select: none;
+        }
+        .refresh-icon:active { transform: rotate(360deg); transition: 0s; }
+
         #clock { font-size: 55px; font-weight: 700; line-height: 1; letter-spacing: 1px; text-shadow: 0 2px 10px rgba(0,0,0,0.5);}
         #date { font-size: 16px; color: #ddd; margin-top: 10px; text-transform: capitalize;}
 
@@ -66,38 +72,18 @@
         .wn-details { grid-column: 2; display: flex; justify-content: center; font-size: 13px; color: #ddd; }
         .rain-risk { color: #64d2ff; font-weight: bold; }
 
-        /* MODIFICATION : Zone scrollable pour les heures (24h) */
         .next-hours { 
-            display: flex; 
-            justify-content: flex-start; 
-            align-items: center;
-            margin: 10px 0; 
-            overflow-x: auto; /* Active le scroll horizontal */
-            padding-bottom: 5px; 
-            
-            /* Masquer la barre de défilement */
-            scrollbar-width: none; 
-            -ms-overflow-style: none;
+            display: flex; justify-content: flex-start; align-items: center; margin: 10px 0; 
+            overflow-x: auto; padding-bottom: 5px; scrollbar-width: none; -ms-overflow-style: none;
         }
         .next-hours::-webkit-scrollbar { display: none; }
-
-        .hour-col { 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            font-size: 12px; 
-            flex: 0 0 auto; /* Ne rétrécit pas */
-            width: 60px; 
-        }
+        .hour-col { display: flex; flex-direction: column; align-items: center; font-size: 12px; flex: 0 0 auto; width: 60px; }
         .hc-time { color: #aaa; margin-bottom: 4px; } .hc-icon { font-size: 18px; margin-bottom: 4px; } .hc-temp { font-weight: bold; }
 
-        /* CYCLE SOLEIL / LUNE (INTELLIGENT) */
+        /* CYCLE SOLEIL */
         .sun-cycle { margin: 10px 0; display: flex; flex-direction: column; }
         .cycle-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
-        
-        #cycle-sun-label { font-size: 12px; font-weight: bold; text-transform: uppercase; transition: color 0.5s; }
-        #cycle-moon-label { font-size: 12px; font-weight: bold; text-transform: uppercase; transition: color 0.5s; }
-
+        #cycle-sun-label, #cycle-moon-label { font-size: 12px; font-weight: bold; text-transform: uppercase; transition: color 0.5s; }
         .sun-bar-bg { width: 100%; height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; position: relative; overflow: hidden; margin-top: 5px; transition: background 0.5s;}
         .sun-bar-fill { height: 100%; width: 0%; border-radius: 3px; transition: width 1s, background 0.5s;}
         .sun-times { display: flex; justify-content: space-between; font-size: 11px; color: #aaa; margin-top: 4px;}
@@ -108,7 +94,6 @@
         .day-row:last-child { border-bottom: none; padding-bottom: 0; }
         .dr-name { width: 50px; font-weight: bold; color: #ddd; text-transform: capitalize; }
         .dr-icon { font-size: 24px; width: 35px; text-align: center; }
-        
         .dr-temps { display: flex; flex-direction: column; align-items: flex-end; width: 90px; }
         .temp-line { display: flex; justify-content: space-between; width: 100%; font-size: 12px; }
         .temp-label { color: #777; font-size: 10px; width: 40px; text-align: right; margin-right: 5px;}
@@ -118,62 +103,30 @@
 
         /* --- 4. AGENDA --- */
         .panel-agenda { grid-area: panel-agenda; padding: 0; display: flex; flex-direction: row; }
-        
         .agenda-left { 
-            width: 38%; 
-            background-color: rgba(0, 0, 0, 0.3); 
-            padding: 20px; 
-            display: flex; 
-            flex-direction: column; 
-            border-right: 1px solid rgba(255,255,255,0.1); 
-            overflow-y: auto; 
+            width: 38%; background-color: rgba(0, 0, 0, 0.3); padding: 20px; 
+            display: flex; flex-direction: column; border-right: 1px solid rgba(255,255,255,0.1); overflow-y: auto; 
         }
         .agenda-title { font-size: 16px; color: #ddd; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; display: flex; justify-content: space-between;}
         .config-btn { cursor: pointer; opacity: 0.5; font-size: 12px; }
         .selected-date-display { font-size: 18px; font-weight: bold; margin-bottom: 10px; color: #fff; text-transform: capitalize;}
-        
         .event-card { background-color: rgba(94, 92, 230, 0.9); color: white; padding: 12px; border-radius: 12px; display: flex; flex-direction: column; margin-bottom: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.3); }
         .event-time { font-size: 11px; opacity: 0.9; font-weight: bold; margin-bottom: 2px;}
         .event-name { font-size: 14px; font-weight: bold; }
         .event-desc { font-size: 11px; opacity: 0.9; margin-top: 2px;}
         .no-event { color: #888; font-style: italic; margin-top: 10px; font-size: 13px;}
-        .debug-error { color: #ff453a; font-size: 10px; margin-top: 5px; border: 1px solid #ff453a; padding: 4px; border-radius: 4px;}
 
         /* CALENDRIER */
         .agenda-right { width: 62%; padding: 15px; display: flex; flex-direction: column; justify-content: flex-start;}
         .cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: 16px; font-weight: bold; text-transform: uppercase; color: #ddd; }
         .nav-arrow { cursor: pointer; padding: 0 15px; color: #5e5ce6; font-size: 24px; user-select: none;}
-        
         .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); grid-gap: 3px; text-align: center; }
         .cal-days-container { height: 75%; }
         .cal-day-name { font-size: 10px; color: #888; padding-bottom: 4px; }
         .cal-day { aspect-ratio: 1; display: flex; justify-content: center; align-items: center; border-radius: 50%; font-size: 13px; cursor: pointer; position: relative; transition: 0.2s;}
-        
-        .cal-day.today::before {
-            content: '';
-            position: absolute;
-            left: 50%; top: 60%;
-            transform: translate(-50%, -50%);
-            width: 30px; height: 30px;
-            border-radius: 50%;
-            box-shadow: 0 0 0 2px #5e5ce6;
-            pointer-events: none;
-            z-index: -1;
-        }
+        .cal-day.today::before { content: ''; position: absolute; left: 50%; top: 60%; transform: translate(-50%, -50%); width: 30px; height: 30px; border-radius: 50%; box-shadow: 0 0 0 2px #5e5ce6; pointer-events: none; z-index: -1; }
         .cal-day.today { color: #fff; font-weight: bold; z-index: 1; }
-        .cal-day.active::before {
-            content: '';
-            position: absolute;
-            left: 50%; top: 60%;
-            transform: translate(-50%, -50%);
-            width: 30px; height: 30px;
-            border-radius: 50%;
-            box-shadow: 0 0 0 2px #5e5ce6;
-            pointer-events: none;
-            background-color: #5e5ce6;
-            z-index: -1;
-            color: #fff;
-        }
+        .cal-day.active::before { content: ''; position: absolute; left: 50%; top: 60%; transform: translate(-50%, -50%); width: 30px; height: 30px; border-radius: 50%; box-shadow: 0 0 0 2px #5e5ce6; pointer-events: none; background-color: #5e5ce6; z-index: -1; color: #fff; }
         .cal-day.has-event::after { content: ''; position: absolute; bottom: 1px; width: 4px; height: 4px; background-color: #fff; border-radius: 50%; left: 50%; transform: translateX(-50%); }
         .cal-day:not(.active).has-event::after { background-color: #5e5ce6; transform: translateX(-50%); }
         .cal-day.empty { pointer-events: none; }
@@ -181,11 +134,9 @@
         /* --- 5. TEMPO --- */
         .panel-tempo { grid-area: panel-tempo; }
         .tempo-header { display: flex; justify-content: space-between; align-items: center; margin: 0 0 20px 0; color:#ddd; font-size: 16px; text-transform: uppercase; letter-spacing: 1px;}
-
         .tempo-body-flex { display: flex; flex-direction: column; align-items: center; flex: 1; width: 100%; justify-content: space-between; }
         .tempo-colors { display: flex; width: 100%; justify-content: space-around; align-items: center; margin-bottom: 15px; }
         .tempo-day-box { display: flex; flex-direction: column; align-items: center; }
-        
         .tempo-label { font-size: 12px; color: #fff; font-weight: bold; text-transform: uppercase; margin-bottom: 10px; letter-spacing: 1px;}
         .tempo-circle { width: 50px; height: 50px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 20px; font-weight: bold; border: 3px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.3); box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
         .tempo-blue { background: radial-gradient(circle at 30% 30%, #007bff, #0056b3); border-color: #004494; color: white; text-shadow: 0 1px 2px rgba(0,0,0,0.5);}
@@ -193,15 +144,12 @@
         .tempo-red { background: radial-gradient(circle at 30% 30%, #dc3545, #bd2130); border-color: #a71d2a; color: white; text-shadow: 0 1px 2px rgba(0,0,0,0.5);}
         .tempo-unk { border: 2px dashed #555; color: #555; font-size: 10px; }
         .tempo-text { font-size: 12px; font-weight: bold; margin-top: 10px; color: #fff; }
-        
         .tempo-status-list { display: flex; flex-direction: column; width: 100%;}
         .status-item { padding: 8px 12px; border-radius: 15px; font-size: 12px; color: #aaa; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
         .status-item.active {border: none; color: #fff; font-weight: bold; box-shadow: 0 2px 10px rgba(0,0,0,0.3);}
         .active-hp { background-color: #ff453a !important; }
         .active-hc { background-color: #30d158 !important; }
         .si-time { font-size: 10px; opacity: 0.8; top: 1px; padding-left: 5px; position: relative; }
-        
-        /* JAUGES EPAISSES */
         .tempo-stats { display: flex; flex-direction: column; justify-content: space-between; background: rgba(0,0,0,0.3); padding-top: 10px; border-radius: 12px; margin-top: 10px; width: 100%;}
         .stat-col { flex: 1; display: flex; align-items: center; margin: 0 10px; margin-bottom: 8px; }
         .stat-val { width: 70px; margin-right: 10px; font-size: 13px; font-weight: bold; display: flex; align-items: center;}
@@ -212,15 +160,51 @@
         .c-white { color: #fff; } .bg-white { background-color: #fff; }
         .c-red { color: #ff5c6c; } .bg-red { background-color: #ff5c6c; }
 
-        /* --- 6. RECETTE --- */
-        .panel-conso { grid-area: panel-conso; padding: 0 !important; position: relative; cursor: grab; }
-        .panel-conso:active { cursor: grabbing; }
+        /* --- 6. RECETTE & SHOPPING LIST --- */
+        .panel-conso { grid-area: panel-conso; padding: 0 !important; position: relative; }
+        
+        /* Bouton Switch */
+        .conso-toggle-btn {
+            position: absolute; top: 15px; right: 15px; z-index: 20;
+            background: rgba(0,0,0,0.6); backdrop-filter: blur(5px);
+            width: 35px; height: 35px; border-radius: 50%;
+            display: flex; justify-content: center; align-items: center;
+            cursor: pointer; font-size: 18px; border: 1px solid rgba(255,255,255,0.2);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.5); user-select: none;
+        }
+
+        /* Vue Recette */
+        #view-recipe { width: 100%; height: 100%; position: absolute; top: 0; left: 0; cursor: grab; }
+        #view-recipe:active { cursor: grabbing; }
         #recette-bg { width: 100%; height: 100%; background-size: cover; background-position: center; transition: opacity 0.5s; }
         .recette-overlay { position: absolute; bottom: 0; left: 0; width: 100%; background: linear-gradient(to top, rgba(0,0,0,0.9), transparent); padding: 20px; box-sizing: border-box; display: flex; flex-direction: column; justify-content: flex-end; height: 100%; pointer-events: none; }
         .recette-tag { background: rgba(255,165,0,0.9); color: white; align-self: flex-start; padding: 4px 8px; border-radius: 6px; font-size: 10px; font-weight: bold; text-transform: uppercase; margin-bottom: 5px; }
         .recette-title { font-size: 18px; font-weight: 700; line-height: 1.2; text-shadow: 0 2px 4px rgba(0,0,0,0.8); color: white; }
 
-        /* Modal Input */
+        /* Vue Shopping List */
+        #view-shopping { 
+            display: none; width: 100%; height: 100%; 
+            background: #1c1c1e; /* Fond uni pour lisibilité */
+            box-sizing: border-box; padding: 20px;
+            flex-direction: column;
+        }
+        #view-shopping h3 { margin-top: 0; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; font-size: 16px; text-transform: uppercase; color: #ddd; letter-spacing: 1px;}
+        
+        .shop-input-group { display: flex; gap: 8px; margin-bottom: 10px; }
+        #shop-input { flex: 1; background: rgba(255,255,255,0.1); border: none; padding: 10px; border-radius: 8px; color: white; font-size: 14px; outline: none;}
+        #shop-add-btn { background: #30d158; color: white; border: none; border-radius: 8px; width: 40px; cursor: pointer; font-weight: bold; font-size: 20px;}
+        
+        #shop-list { list-style: none; padding: 0; margin: 0; flex: 1; overflow-y: auto; scrollbar-width: none; }
+        #shop-list::-webkit-scrollbar { display: none; }
+        
+        .shop-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05); animation: fadeIn 0.3s;}
+        .shop-item span { cursor: pointer; flex: 1; font-size: 14px;}
+        .shop-item.checked span { text-decoration: line-through; opacity: 0.4; }
+        .shop-del { color: #ff453a; cursor: pointer; padding: 0 10px; font-weight: bold; font-size: 18px;}
+        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Modal Input URL */
         #url-modal { position: absolute; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.8); z-index: 100; display: none; flex-direction: column; justify-content: center; align-items: center; }
         #url-modal.show { display: flex; }
         .modal-box { background: #333; padding: 20px; border-radius: 15px; width: 300px; text-align: center; position: relative; border: 1px solid #555;}
@@ -243,6 +227,7 @@
 
     <div class="card panel-left">
         <div class="header-time">
+            <div class="refresh-icon" onclick="window.location.reload()">↻</div>
             <div id="clock">--:--</div>
             <div id="date">Chargement...</div>
         </div>
@@ -253,13 +238,11 @@
                 <div class="wn-desc" id="curr-desc">...</div>
                 <div class="wn-details"><span id="rain-risk" class="rain-risk">💧 --%</span></div>
             </div>
-            
             <div class="next-hours" id="hourly-container"></div>
-            
             <div class="sun-cycle">
                 <div class="cycle-header">
-                    <span id="cycle-sun-label" style="transition:all 0.5s;">SOLEIL</span>
-                    <span id="cycle-moon-label" style="transition:all 0.5s;">--</span>
+                    <span id="cycle-sun-label">SOLEIL</span>
+                    <span id="cycle-moon-label">--</span>
                 </div>
                 <div class="sun-bar-bg"><div class="sun-bar-fill" id="sun-progress"></div></div>
                 <div class="sun-times">
@@ -267,19 +250,14 @@
                     <span id="label-right">--:--</span>
                 </div>
             </div>
-            
             <div class="next-days" id="daily-container"></div>
         </div>
-        
     </div>
 
     <div class="card panel-agenda">
         <div class="agenda-left" id="agenda-scroll-zone">
             <div>
-                <div class="agenda-title">
-                    Événements
-                    <span class="config-btn" onclick="resetUrl()">⚙️</span>
-                </div>
+                <div class="agenda-title">Événements <span class="config-btn" onclick="resetUrl()">⚙️</span></div>
                 <div id="selected-date-text" class="selected-date-display">Aujourd'hui</div>
             </div>
             <div id="events-list-container"></div>
@@ -296,9 +274,7 @@
     </div>
 
     <div class="card panel-tempo">
-        <p class="tempo-header">
-            Option Tempo
-        </p>
+        <p class="tempo-header">Option Tempo</p>
         <div class="tempo-body-flex">
             <div class="tempo-colors">
                 <div class="tempo-day-box">
@@ -313,50 +289,63 @@
                 </div>
             </div>
             <div class="tempo-status-list">
-                <div id="badge-hp" class="status-item">
-                    <span>⚡ Heures Pleines</span>
-                    <span class="si-time">06h - 22h</span>
-                </div>
-                <div id="badge-hc" class="status-item">
-                    <span>🌙 Heures Creuses</span>
-                    <span class="si-time">22h - 06h</span>
-                </div>
+                <div id="badge-hp" class="status-item"><span>⚡ Heures Pleines</span><span class="si-time">06h - 22h</span></div>
+                <div id="badge-hc" class="status-item"><span>🌙 Heures Creuses</span><span class="si-time">22h - 06h</span></div>
             </div>
             <div class="tempo-stats">
-                <div class="stat-col"><div class="stat-val c-blue">195<span class="stat-total">/300</span></div><div class="progress-bg"><div class="progress-fill bg-blue" style="width: 65%;"></div></div></div>
-                <div class="stat-col"><div class="stat-val c-white">31 <span class="stat-total">/43</span></div><div class="progress-bg"><div class="progress-fill bg-white" style="width: 72%;"></div></div></div>
-                <div class="stat-col"><div class="stat-val c-red">22<span class="stat-total">/22</span></div><div class="progress-bg"><div class="progress-fill bg-red" style="width: 100%;"></div></div></div>
+                <div class="stat-col">
+                    <div class="stat-val c-blue"><span id="cpt-blue">--</span><span class="stat-total">/300</span></div>
+                    <div class="progress-bg"><div id="bar-blue" class="progress-fill bg-blue" style="width: 100%;"></div></div>
+                </div>
+                <div class="stat-col">
+                    <div class="stat-val c-white"><span id="cpt-white">--</span><span class="stat-total">/43</span></div>
+                    <div class="progress-bg"><div id="bar-white" class="progress-fill bg-white" style="width: 100%;"></div></div>
+                </div>
+                <div class="stat-col">
+                    <div class="stat-val c-red"><span id="cpt-red">--</span><span class="stat-total">/22</span></div>
+                    <div class="progress-bg"><div id="bar-red" class="progress-fill bg-red" style="width: 100%;"></div></div>
+                </div>
             </div>
         </div>
     </div>
 
-    <div class="card panel-conso" id="recipe-box">
-        <div class="recette-overlay">
-            <h2>Idée Recette</h2>
-            <p>Chargement...</p>
+    <div class="card panel-conso" id="conso-card">
+        <div class="conso-toggle-btn" id="conso-toggle-icon" onclick="toggleConsoView()">📝</div>
+
+        <div id="view-recipe">
+            <div class="recette-overlay">
+                <h2>Idée Recette</h2>
+                <p>Chargement...</p>
+            </div>
+            <div id="recette-bg"></div>
         </div>
-        <div id="recette-bg"></div>
+
+        <div id="view-shopping">
+            <h3>Liste de courses</h3>
+            <div class="shop-input-group">
+                <input type="text" id="shop-input" placeholder="Ajouter un article...">
+                <button id="shop-add-btn" onclick="addShopItem()">+</button>
+            </div>
+            <ul id="shop-list"></ul>
+        </div>
     </div>
 
     <script>
-        document.body.addEventListener('touchmove', function(e) { if (e.target.closest('.agenda-left') || e.target.closest('.next-hours')) { return; } e.preventDefault(); }, { passive: false });
+        document.body.addEventListener('touchmove', function(e) { if (e.target.closest('.agenda-left') || e.target.closest('.next-hours') || e.target.closest('#shop-list')) { return; } e.preventDefault(); }, { passive: false });
         
-        let weatherCache = null;
-        let lastRenderedHour = -1;
+        let weatherCache = null; let lastRenderedHour = -1;
         let astros = { todaySunrise: null, todaySunset: null, tomorrowSunrise: null };
 
         function updateClock() { 
             const now = new Date(); 
             document.getElementById('clock').textContent = now.toLocaleTimeString('fr-FR', {hour: '2-digit', minute:'2-digit'}); 
             document.getElementById('date').textContent = now.toLocaleDateString('fr-FR', {weekday: 'long', day: 'numeric', month: 'long'}); 
-            
-            updateTempoPeriod(now);
-            if(astros.todaySunrise) updateSunCycle(now);
+            updateTempoPeriod(now); if(astros.todaySunrise) updateSunCycle(now);
             if (now.getHours() !== lastRenderedHour && weatherCache) renderWeatherFromCache(); 
         }
         setInterval(updateClock, 1000); 
 
-        /* --- 1. FOND D'ECRAN (Rotation 15 min) --- */
+        /* WALLPAPER */
         const wallpapers = [
             'https://images.unsplash.com/photo-1472214103451-9374bd1c798e?q=80&w=2000', 
             'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?q=80&w=2000',
@@ -364,8 +353,7 @@
             'https://images.unsplash.com/photo-1501854140884-074cf2b2c3af?q=80&w=2000',
             'https://images.unsplash.com/photo-1532274402911-5a369e4c4bb5?q=80&w=2000',
             'https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=2000',
-            'https://images.unsplash.com/photo-1469474968028-56623f02e42e?q=80&w=2000',
-            'https://images.unsplash.com/photo-1493246507139-91e8fad9978e?q=80&w=2000'
+            'https://images.unsplash.com/photo-1469474968028-56623f02e42e?q=80&w=2000'
         ];
         function changeWallpaper() {
             const randomUrl = wallpapers[Math.floor(Math.random() * wallpapers.length)];
@@ -374,13 +362,147 @@
         }
         changeWallpaper(); setInterval(changeWallpaper, 900000);
 
-        /* --- 2. RECETTE --- */
-        const recipeBox = document.getElementById('recipe-box');
+        /* --- LOGIQUE RECETTE & SHOPPING LIST (CONNECTÉE TODOIST) --- */
+        
+        // --- CONFIGURATION TODOIST ---
+        const TODO_TOKEN = "3f0ec22218b837f01e774d206acdb9e713f8a0d2"; // Votre clé API
+        let TODO_PROJECT_ID = null; // Sera trouvé automatiquement
+
+        // Initialisation : On cherche l'ID du projet "Courses"
+        function initTodoist() {
+            fetch("https://api.todoist.com/rest/v2/projects", {
+                headers: { "Authorization": `Bearer ${TODO_TOKEN}` }
+            })
+            .then(res => res.json())
+            .then(projects => {
+                // On cherche le projet qui s'appelle "Courses"
+                const monProjet = projects.find(p => p.name.toLowerCase().includes("course"));
+                if(monProjet) {
+                    TODO_PROJECT_ID = monProjet.id;
+                    console.log("Projet trouvé : " + monProjet.name + " (ID: " + monProjet.id + ")");
+                } else {
+                    console.warn("Projet 'Courses' introuvable, utilisation de l'Inbox.");
+                }
+            })
+            .catch(err => console.error("Erreur init Todoist", err));
+        }
+        initTodoist();
+
+        let isShoppingView = false;
+        
+        // RECETTE (Swipe logic)
+        const viewRecipe = document.getElementById('view-recipe');
         let touchStartX = 0; let touchEndX = 0;
-        recipeBox.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; }, {passive: true});
-        recipeBox.addEventListener('touchend', e => { touchEndX = e.changedTouches[0].screenX; handleSwipe(); }, {passive: true});
+        viewRecipe.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; }, {passive: true});
+        viewRecipe.addEventListener('touchend', e => { touchEndX = e.changedTouches[0].screenX; handleSwipe(); }, {passive: true});
         function handleSwipe() { if (Math.abs(touchEndX - touchStartX) > 50) { forceNewRecipe(); } }
 
+        function toggleConsoView() {
+            isShoppingView = !isShoppingView;
+            const btn = document.getElementById('conso-toggle-icon');
+            const vRecipe = document.getElementById('view-recipe');
+            const vShop = document.getElementById('view-shopping');
+            
+            if (isShoppingView) {
+                vRecipe.style.display = 'none';
+                vShop.style.display = 'flex';
+                btn.textContent = '🍳'; // Icone retour recette
+                fetchTodoistItems(); // On charge la liste depuis le cloud
+            } else {
+                vShop.style.display = 'none';
+                vRecipe.style.display = 'block';
+                btn.textContent = '📝'; // Icone vers liste
+            }
+        }
+
+        // --- FONCTIONS API TODOIST ---
+
+        function fetchTodoistItems() {
+            const ul = document.getElementById('shop-list');
+            ul.innerHTML = '<li class="shop-item" style="color:#888;">Chargement...</li>';
+
+            // Si ID pas encore trouvé, on attend un peu
+            if(!TODO_PROJECT_ID) {
+                setTimeout(fetchTodoistItems, 1000);
+                return;
+            }
+
+            fetch(`https://api.todoist.com/rest/v2/tasks?project_id=${TODO_PROJECT_ID}`, {
+                method: "GET",
+                headers: { "Authorization": `Bearer ${TODO_TOKEN}` }
+            })
+            .then(res => res.json())
+            .then(tasks => {
+                ul.innerHTML = ''; // Vider la liste
+                if(tasks.length === 0) {
+                    ul.innerHTML = '<li class="shop-item" style="justify-content:center; color:#555; font-style:italic;">Liste vide</li>';
+                    return;
+                }
+                tasks.forEach(task => {
+                    const li = document.createElement('li');
+                    li.className = 'shop-item';
+                    li.innerHTML = `
+                        <span>${task.content}</span> 
+                        <div class="shop-del" onclick="closeTodoistTask('${task.id}')">&times;</div>
+                    `;
+                    ul.appendChild(li);
+                });
+            })
+            .catch(err => {
+                console.error(err);
+                ul.innerHTML = '<li class="shop-item" style="color:red;">Erreur de connexion</li>';
+            });
+        }
+
+        function addShopItem() {
+            const input = document.getElementById('shop-input');
+            const val = input.value.trim();
+            if (!val) return;
+
+            // Optimistic UI
+            input.value = ''; 
+            
+            fetch("https://api.todoist.com/rest/v2/tasks", {
+                method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${TODO_TOKEN}`,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    content: val,
+                    project_id: TODO_PROJECT_ID
+                })
+            })
+            .then(res => {
+                if(res.ok) fetchTodoistItems(); 
+            });
+        }
+
+        function closeTodoistTask(taskId) {
+            const ul = document.getElementById('shop-list');
+            ul.style.opacity = '0.5';
+
+            fetch(`https://api.todoist.com/rest/v2/tasks/${taskId}/close`, {
+                method: "POST",
+                headers: { "Authorization": `Bearer ${TODO_TOKEN}` }
+            })
+            .then(res => {
+                ul.style.opacity = '1';
+                if(res.ok) fetchTodoistItems(); 
+            });
+        }
+        
+        document.getElementById('shop-input').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') addShopItem();
+        });
+
+        // Actualisation auto toutes les 5min si vue active
+        setInterval(() => {
+            if(isShoppingView) fetchTodoistItems();
+        }, 300000);
+
+
+        /* FETCH RECIPES */
         function loadDailyRecipe() {
             const today = new Date().toDateString();
             const stored = localStorage.getItem('daily_recipe_date');
@@ -401,52 +523,42 @@
                 }).catch(console.error);
         }
         function displayRecipe(data) {
-            const box = document.getElementById('recipe-box');
+            const box = document.getElementById('view-recipe');
             const bg = document.getElementById('recette-bg');
             bg.style.backgroundImage = `url('${data.img}')`;
             box.querySelector('.recette-overlay').innerHTML = `<h2>Idée Recette</h2><span class="recette-tag">${data.cat}</span><div class="recette-title">${data.title}</div>`;
         }
         loadDailyRecipe(); setInterval(loadDailyRecipe, 3600000);
 
-        /* --- 3. METEO --- */
+
+        /* --- METEO --- */
         function getIcon(c, d) { 
             const i = { 0: "☀️", 1: "🌤", 2: "☁️", 3: "☁️", 45: "🌫", 48: "🌫", 51: "🌦", 53: "🌦", 55: "🌦", 56: "❄️", 57: "❄️", 61: "🌧", 63: "🌧", 65: "🌧", 66: "❄️", 67: "❄️", 71: "❄️", 73: "❄️", 75: "❄️", 77: "❄️", 80: "🌦", 81: "🌧", 82: "🌧", 85: "❄️", 86: "❄️", 95: "⚡️", 96: "⛈", 99: "⛈" }; 
             let ic = i[c] || "❓"; if (!d && (c === 0 || c === 1)) ic = "🌙"; return ic; 
         }
-
         function fetchWeather() {
             const url = "https://api.open-meteo.com/v1/forecast?latitude=47.20&longitude=-0.99&current=temperature_2m,is_day,precipitation,weather_code&hourly=temperature_2m,precipitation_probability,weather_code&daily=weather_code,sunrise,sunset,precipitation_probability_max&timezone=Europe%2FParis";
             const xhr = new XMLHttpRequest(); xhr.open("GET", url); 
             xhr.onload = function() { if (xhr.status === 200) { weatherCache = JSON.parse(xhr.responseText); renderWeatherFromCache(); } }; 
             xhr.send();
         }
-
         function renderWeatherFromCache() {
             if (!weatherCache) return;
             const data = weatherCache; const c = data.current; const d = data.daily; const h = data.hourly;
             lastRenderedHour = new Date().getHours();
-            
             document.getElementById('curr-temp').textContent = Math.round(c.temperature_2m) + "°";
             document.getElementById('curr-icon').textContent = getIcon(c.weather_code, c.is_day);
             document.getElementById('curr-desc').textContent = {0:"Ensoleillé", 1:"Variable", 2:"Nuageux", 3:"Couvert", 61:"Pluie"}[c.weather_code] || "Variable";
             document.getElementById('rain-risk').textContent = "💧 " + d.precipitation_probability_max[0] + "%";
-            
             const hCont = document.getElementById('hourly-container'); hCont.innerHTML = "";
             const curH = lastRenderedHour; 
-            
-            // MODIFICATION: Boucle de 24h
             for(let i=0; i<24; i++) {
                 let idx = curH + i; if(idx>23) idx-=24;
                 hCont.innerHTML += `<div class="hour-col"><span class="hc-time">${idx}h</span><span class="hc-icon">${getIcon(h.weather_code[idx], 1)}</span><span class="hc-temp">${Math.round(h.temperature_2m[idx])}°</span></div>`;
             }
-            
-            astros.todaySunrise = new Date(d.sunrise[0]); 
-            astros.todaySunset = new Date(d.sunset[0]);
-            if(d.sunrise[1]) astros.tomorrowSunrise = new Date(d.sunrise[1]);
-            else astros.tomorrowSunrise = new Date(astros.todaySunrise.getTime() + 24*3600*1000);
-            
+            astros.todaySunrise = new Date(d.sunrise[0]); astros.todaySunset = new Date(d.sunset[0]);
+            if(d.sunrise[1]) astros.tomorrowSunrise = new Date(d.sunrise[1]); else astros.tomorrowSunrise = new Date(astros.todaySunrise.getTime() + 24*3600*1000);
             updateSunCycle(new Date());
-
             const dCont = document.getElementById('daily-container'); dCont.innerHTML = "";
             for(let i=1; i<=5; i++) {
                 const dateObj = new Date(d.time[i]);
@@ -462,188 +574,99 @@
                 dCont.innerHTML += `<div class="day-row"><span class="dr-name">${dayName} ${dateNum}</span><span class="dr-icon">${dIcon}</span><div class="dr-temps"><div class="temp-line"><div class="temp-label">Matin :</div><div class="temp-vals"><span class="t-min">${minM}°</span><span class="t-max">${maxM}°</span></div></div><div class="temp-line"><div class="temp-label">Aprem :</div><div class="temp-vals"><span class="t-min">${minA}°</span><span class="t-max">${maxA}°</span></div></div></div></div>`;
             }
         }
-
-        // --- CALCUL DE LA PHASE DE LUNE ---
         function getMoonPhaseInfo(date) {
-            let year = date.getFullYear();
-            let month = date.getMonth() + 1;
-            let day = date.getDate();
-            if (month < 3) { year--; month += 12; }
-            ++month;
-            let c = 365.25 * year;
-            let e = 30.6 * month;
-            let jd = c + e + day - 694039.09; 
-            jd /= 29.5305882; 
-            let b = parseInt(jd); 
-            jd -= b; 
-            b = Math.round(jd * 8);
-            if (b >= 8) b = 0; 
-            
-            // MODIFICATION: Noms en MAJUSCULES
-            const phases = [
-                { icon: "🌑", label: "NOUVELLE LUNE" },      
-                { icon: "🌒", label: "1ER CROISSANT" },      
-                { icon: "🌓", label: "1ER QUARTIER" },       
-                { icon: "🌔", label: "GIBBEUSE" },         
-                { icon: "🌕", label: "PLEINE LUNE" },        
-                { icon: "🌖", label: "GIBBEUSE" },         
-                { icon: "🌗", label: "DERNIER QUARTIER" },         
-                { icon: "🌘", label: "DERNIER CROISSANT" }      
-            ];
+            let year = date.getFullYear(); let month = date.getMonth() + 1; let day = date.getDate();
+            if (month < 3) { year--; month += 12; } ++month;
+            let c = 365.25 * year; let e = 30.6 * month;
+            let jd = c + e + day - 694039.09; jd /= 29.5305882; 
+            let b = parseInt(jd); jd -= b; b = Math.round(jd * 8); if (b >= 8) b = 0; 
+            const phases = [ { icon: "🌑", label: "NOUVELLE LUNE" }, { icon: "🌒", label: "1ER CROISSANT" }, { icon: "🌓", label: "1ER QUARTIER" }, { icon: "🌔", label: "GIBBEUSE" }, { icon: "🌕", label: "PLEINE LUNE" }, { icon: "🌖", label: "GIBBEUSE" }, { icon: "🌗", label: "DERNIER QUARTIER" }, { icon: "🌘", label: "DERNIER CROISSANT" } ];
             return phases[b];
         }
-
-        // --- GESTION DU CYCLE JOUR / NUIT ---
         function updateSunCycle(now) {
-            const sunLabel = document.getElementById('cycle-sun-label');
-            const moonLabel = document.getElementById('cycle-moon-label');
-            const barFill = document.getElementById('sun-progress');
-            const labelLeft = document.getElementById('label-left');
-            const labelRight = document.getElementById('label-right');
+            const sunLabel = document.getElementById('cycle-sun-label'); const moonLabel = document.getElementById('cycle-moon-label');
+            const barFill = document.getElementById('sun-progress'); const labelLeft = document.getElementById('label-left'); const labelRight = document.getElementById('label-right');
             const ft = (dt) => dt.toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit'});
-            
-            const moon = getMoonPhaseInfo(now);
-            
-            // MODIFICATION : TEXTE LUNE À GAUCHE, ICONE À DROITE
-            moonLabel.textContent = `${moon.label} ${moon.icon}`;
-
-            // 2. Vérifier si on est le JOUR ou la NUIT
+            const moon = getMoonPhaseInfo(now); moonLabel.textContent = `${moon.label} ${moon.icon}`;
             if (now >= astros.todaySunrise && now <= astros.todaySunset) {
-                // --- MODE JOUR ---
-                sunLabel.style.color = "orange"; 
-                sunLabel.style.opacity = "1"; 
-                moonLabel.style.color = "#aaa"; 
-                moonLabel.style.opacity = "0.5"; 
-
-                barFill.style.background = "orange";
-                let totalDay = astros.todaySunset - astros.todaySunrise;
-                let elapsed = now - astros.todaySunrise;
-                let pct = (elapsed / totalDay) * 100;
+                sunLabel.style.color = "orange"; sunLabel.style.opacity = "1"; moonLabel.style.color = "#aaa"; moonLabel.style.opacity = "0.5"; barFill.style.background = "orange";
+                let pct = ((now - astros.todaySunrise) / (astros.todaySunset - astros.todaySunrise)) * 100;
                 barFill.style.width = Math.min(100, Math.max(0, pct)) + "%";
-
-                labelLeft.textContent = "Lever " + ft(astros.todaySunrise);
-                labelRight.textContent = "Coucher " + ft(astros.todaySunset);
-            } 
-            else {
-                // --- MODE NUIT ---
-                sunLabel.style.color = "#aaa"; 
-                sunLabel.style.opacity = "0.5"; 
-                
-                moonLabel.style.opacity = "1"; 
-                moonLabel.style.color = (moon.label.includes("PLEINE")) ? "#ffd700" : "#fff"; 
-
-                barFill.style.background = "#4a6fa5"; 
-
+                labelLeft.textContent = "Lever " + ft(astros.todaySunrise); labelRight.textContent = "Coucher " + ft(astros.todaySunset);
+            } else {
+                sunLabel.style.color = "#aaa"; sunLabel.style.opacity = "0.5"; moonLabel.style.opacity = "1"; moonLabel.style.color = (moon.label.includes("PLEINE")) ? "#ffd700" : "#fff"; barFill.style.background = "#4a6fa5"; 
                 if (now > astros.todaySunset) {
-                    let totalNight = astros.tomorrowSunrise - astros.todaySunset;
-                    let elapsed = now - astros.todaySunset;
-                    let pct = (elapsed / totalNight) * 100;
+                    let pct = ((now - astros.todaySunset) / (astros.tomorrowSunrise - astros.todaySunset)) * 100;
                     barFill.style.width = Math.min(100, Math.max(0, pct)) + "%";
-                    
-                    labelLeft.textContent = "Coucher " + ft(astros.todaySunset);
-                    labelRight.textContent = "Lever " + ft(astros.tomorrowSunrise);
-                } 
-                else if (now < astros.todaySunrise) {
+                    labelLeft.textContent = "Coucher " + ft(astros.todaySunset); labelRight.textContent = "Lever " + ft(astros.tomorrowSunrise);
+                } else if (now < astros.todaySunrise) {
                     let yesterdaySunset = new Date(astros.todaySunset.getTime() - (24*3600*1000));
-                    let totalNight = astros.todaySunrise - yesterdaySunset;
-                    let elapsedActual = now - yesterdaySunset;
-                    let pct = (elapsedActual / totalNight) * 100;
+                    let pct = ((now - yesterdaySunset) / (astros.todaySunrise - yesterdaySunset)) * 100;
                     barFill.style.width = Math.min(100, Math.max(0, pct)) + "%";
-
-                    labelLeft.textContent = "Coucher " + ft(yesterdaySunset); 
-                    labelRight.textContent = "Lever " + ft(astros.todaySunrise);
+                    labelLeft.textContent = "Coucher " + ft(yesterdaySunset); labelRight.textContent = "Lever " + ft(astros.todaySunrise);
                 }
             }
         }
-
-        // [TEMPO]
         function updateTempoPeriod(dateObj) {
-            const hour = dateObj.getHours();
-            const badgeHP = document.getElementById('badge-hp');
-            const badgeHC = document.getElementById('badge-hc');
+            const hour = dateObj.getHours(); const badgeHP = document.getElementById('badge-hp'); const badgeHC = document.getElementById('badge-hc');
             badgeHP.className = "status-item"; badgeHC.className = "status-item";
             if (hour >= 6 && hour < 22) { badgeHP.classList.add("active", "active-hp"); } else { badgeHC.classList.add("active", "active-hc"); }
         }
         function fetchTempo() {
             const apiToday = "https://www.api-couleur-tempo.fr/api/jourTempo/today";
             const apiTmrw = "https://www.api-couleur-tempo.fr/api/jourTempo/tomorrow";
-            Promise.all([fetch(apiToday), fetch(apiTmrw)]).then(responses => Promise.all(responses.map(r => r.json()))).then(data => { updateTempoUI(data[0], data[1]); });
+            const now = new Date(); let startYear = now.getFullYear(); if (now.getMonth() < 8) startYear--; 
+            const seasonStr = `${startYear}-${startYear + 1}`;
+            const apiHistory = `https://www.api-couleur-tempo.fr/api/joursTempo?periode=${seasonStr}`;
+            Promise.all([fetch(apiToday).then(r => r.json()), fetch(apiTmrw).then(r => r.json()), fetch(apiHistory).then(r => r.json())])
+                .then(([dT, dTm, dH]) => { updateTempoColors(dT, dTm); updateTempoStats(dH); }).catch(console.error);
         }
-        function updateTempoUI(todayData, tomorrowData) {
-            const colors = { 0: "unk", 1: "blue", 2: "white", 3: "red" };
-            const labels = { 0: "Indéfini", 1: "BLEU", 2: "BLANC", 3: "ROUGE" };
-            const tCode = todayData.codeJour;
-            const tEl = document.getElementById('tempo-today-circle');
-            tEl.className = `tempo-circle tempo-${colors[tCode]}`; tEl.textContent = ""; 
+        function updateTempoColors(todayData, tomorrowData) {
+            const colors = { 0: "unk", 1: "blue", 2: "white", 3: "red" }; const labels = { 0: "Indéfini", 1: "BLEU", 2: "BLANC", 3: "ROUGE" };
+            const tCode = todayData.codeJour; const tmCode = tomorrowData.codeJour;
+            const tEl = document.getElementById('tempo-today-circle'); tEl.className = `tempo-circle tempo-${colors[tCode]}`; tEl.textContent = ""; 
             const tText = document.getElementById('tempo-today-text'); tText.textContent = labels[tCode];
             tText.style.color = (tCode === 2) ? "#fff" : (tCode === 1 ? "#007bff" : (tCode === 3 ? "#ff453a" : "#777"));
-            const tmCode = tomorrowData.codeJour;
-            const tmEl = document.getElementById('tempo-tmrw-circle');
-            tmEl.className = `tempo-circle tempo-${colors[tmCode]}`; tmEl.textContent = (tmCode === 0) ? "?" : "";
+            const tmEl = document.getElementById('tempo-tmrw-circle'); tmEl.className = `tempo-circle tempo-${colors[tmCode]}`; tmEl.textContent = (tmCode === 0) ? "?" : "";
             const tmText = document.getElementById('tempo-tmrw-text'); tmText.textContent = labels[tmCode];
             tmText.style.color = (tmCode === 2) ? "#fff" : (tmCode === 1 ? "#007bff" : (tmCode === 3 ? "#ff453a" : "#777"));
         }
+        function updateTempoStats(historyData) {
+            const totalBlue = 300; const totalWhite = 43; const totalRed = 22; let usedBlue = 0; let usedWhite = 0; let usedRed = 0;
+            historyData.forEach(day => { if (day.codeJour === 1) usedBlue++; else if (day.codeJour === 2) usedWhite++; else if (day.codeJour === 3) usedRed++; });
+            const restBlue = Math.max(0, totalBlue - usedBlue); const restWhite = Math.max(0, totalWhite - usedWhite); const restRed = Math.max(0, totalRed - usedRed);
+            document.getElementById('cpt-blue').textContent = restBlue; document.getElementById('bar-blue').style.width = (restBlue / totalBlue * 100) + "%";
+            document.getElementById('cpt-white').textContent = restWhite; document.getElementById('bar-white').style.width = (restWhite / totalWhite * 100) + "%";
+            document.getElementById('cpt-red').textContent = restRed; document.getElementById('bar-red').style.width = (restRed / totalRed * 100) + "%";
+        }
         fetchTempo(); setInterval(fetchTempo, 3600000);
 
-        // [AGENDA & CONFIG]
-        function checkCalendarUrl() {
-            const url = localStorage.getItem('my_cal_url');
-            if (!url) document.getElementById('url-modal').classList.add('show'); 
-            else { document.getElementById('url-modal').classList.remove('show'); fetchAndParseICS(url); }
-        }
-        function saveUrl() {
-            const input = document.getElementById('ics-input').value;
-            if(input.length > 10) { localStorage.setItem('my_cal_url', input); checkCalendarUrl(); }
-        }
-        function resetUrl() {
-            const storedUrl = localStorage.getItem('my_cal_url');
-            if (storedUrl) document.getElementById('ics-input').value = storedUrl;
-            document.getElementById('url-modal').classList.add('show');
-        }
+        /* AGENDA */
+        function checkCalendarUrl() { const url = localStorage.getItem('my_cal_url'); if (!url) document.getElementById('url-modal').classList.add('show'); else { document.getElementById('url-modal').classList.remove('show'); fetchAndParseICS(url); } }
+        function saveUrl() { const input = document.getElementById('ics-input').value; if(input.length > 10) { localStorage.setItem('my_cal_url', input); checkCalendarUrl(); } }
+        function resetUrl() { const storedUrl = localStorage.getItem('my_cal_url'); if (storedUrl) document.getElementById('ics-input').value = storedUrl; document.getElementById('url-modal').classList.add('show'); }
         function closeModal() { document.getElementById('url-modal').classList.remove('show'); }
-
         let myEvents = {}; let displayedDate = new Date(); let selectedCalDate = new Date();
-
         function fetchAndParseICS(url) {
-            const listContainer = document.getElementById('events-list-container');
-            listContainer.innerHTML = '<div class="no-event">Chargement...</div>';
-            
-            // PROXY FIABLE
+            const listContainer = document.getElementById('events-list-container'); listContainer.innerHTML = '<div class="no-event">Chargement...</div>';
             const proxyUrl = 'https://corsproxy.io/?' + encodeURIComponent(url);
-            
-            fetch(proxyUrl, { cache: "no-store" })
-                .then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.text(); })
+            fetch(proxyUrl, { cache: "no-store" }).then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.text(); })
                 .then(data => {
                     if (!data.includes("BEGIN:VCALENDAR")) throw new Error("Fichier ICS invalide");
-                    const jcalData = ICAL.parse(data);
-                    const comp = new ICAL.Component(jcalData);
-                    const vevents = comp.getAllSubcomponents('vevent');
+                    const jcalData = ICAL.parse(data); const comp = new ICAL.Component(jcalData); const vevents = comp.getAllSubcomponents('vevent');
                     myEvents = {}; 
                     vevents.forEach(evt => {
-                        const event = new ICAL.Event(evt);
-                        let startDate; try { startDate = event.startDate.toJSDate(); } catch(e) { return; }
-                        const summary = event.summary || "Sans titre";
-                        const desc = event.description || "";
-                        const year = startDate.getFullYear();
-                        const month = String(startDate.getMonth() + 1).padStart(2, '0');
-                        const day = String(startDate.getDate()).padStart(2, '0');
-                        const dateKey = `${year}-${month}-${day}`;
-                        const timeStr = startDate.toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit'});
-                        if (!myEvents[dateKey]) myEvents[dateKey] = [];
-                        myEvents[dateKey].push({ time: timeStr, title: summary, desc: desc });
+                        const event = new ICAL.Event(evt); let startDate; try { startDate = event.startDate.toJSDate(); } catch(e) { return; }
+                        const summary = event.summary || "Sans titre"; const desc = event.description || "";
+                        const year = startDate.getFullYear(); const month = String(startDate.getMonth() + 1).padStart(2, '0'); const day = String(startDate.getDate()).padStart(2, '0');
+                        const dateKey = `${year}-${month}-${day}`; const timeStr = startDate.toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit'});
+                        if (!myEvents[dateKey]) myEvents[dateKey] = []; myEvents[dateKey].push({ time: timeStr, title: summary, desc: desc });
                     });
-                    renderCalendar(displayedDate);
-                    showEventsForDate(selectedCalDate);
-                })
-                .catch(err => {
-                    console.error("ICS Error:", err);
-                    listContainer.innerHTML = `<div class="no-event" style="color:#ff453a;">Erreur chargement</div>`;
-                });
+                    renderCalendar(displayedDate); showEventsForDate(selectedCalDate);
+                }).catch(err => { console.error("ICS Error:", err); listContainer.innerHTML = `<div class="no-event" style="color:#ff453a;">Erreur chargement</div>`; });
         }
-
         function changeMonth(offset) { displayedDate.setDate(1); displayedDate.setMonth(displayedDate.getMonth() + offset); renderCalendar(displayedDate); }
         function initCalendar() { renderCalendar(displayedDate); showEventsForDate(selectedCalDate); checkCalendarUrl(); }
-
         function renderCalendar(date) {
             const year = date.getFullYear(); const month = date.getMonth(); const today = new Date();
             const mNames = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"];
@@ -653,12 +676,8 @@
             for (let i = 0; i < off; i++) cDays.innerHTML += `<div class="cal-day empty"></div>`;
             for (let i = 1; i <= dInM; i++) {
                 const el = document.createElement('div'); el.classList.add('cal-day'); el.textContent = i;
-                const checkDate = new Date(year, month, i);
-                const yearStr = checkDate.getFullYear();
-                const monthStr = String(checkDate.getMonth() + 1).padStart(2, '0');
-                const dayStr = String(checkDate.getDate()).padStart(2, '0');
+                const checkDate = new Date(year, month, i); const yearStr = checkDate.getFullYear(); const monthStr = String(checkDate.getMonth() + 1).padStart(2, '0'); const dayStr = String(checkDate.getDate()).padStart(2, '0');
                 const localISOTime = `${yearStr}-${monthStr}-${dayStr}`;
-
                 if (i===today.getDate() && month===today.getMonth() && year===today.getFullYear()) el.classList.add('today');
                 if (i===selectedCalDate.getDate() && month===selectedCalDate.getMonth() && year===selectedCalDate.getFullYear()) el.classList.add('active');
                 if (myEvents[localISOTime]) el.classList.add('has-event');
@@ -668,22 +687,14 @@
         }
         function showEventsForDate(date) {
             const cont = document.getElementById('events-list-container'); cont.innerHTML = ""; 
-            const yearStr = date.getFullYear();
-            const monthStr = String(date.getMonth() + 1).padStart(2, '0');
-            const dayStr = String(date.getDate()).padStart(2, '0');
+            const yearStr = date.getFullYear(); const monthStr = String(date.getMonth() + 1).padStart(2, '0'); const dayStr = String(date.getDate()).padStart(2, '0');
             const key = `${yearStr}-${monthStr}-${dayStr}`;
-            
             const dStr = date.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' });
             document.getElementById('selected-date-text').textContent = dStr.charAt(0).toUpperCase() + dStr.slice(1);
             const evs = myEvents[key];
-            if (evs && evs.length > 0) { 
-                evs.sort((a,b) => a.time.localeCompare(b.time));
-                evs.forEach(evt => { cont.innerHTML += `<div class="event-card"><div class="event-time">${evt.time}</div><div class="event-name">${evt.title}</div><div class="event-desc">${evt.desc}</div></div>`; }); 
-            } else { cont.innerHTML = `<div class="no-event">Rien prévu</div>`; }
+            if (evs && evs.length > 0) { evs.sort((a,b) => a.time.localeCompare(b.time)); evs.forEach(evt => { cont.innerHTML += `<div class="event-card"><div class="event-time">${evt.time}</div><div class="event-name">${evt.title}</div><div class="event-desc">${evt.desc}</div></div>`; }); } else { cont.innerHTML = `<div class="no-event">Rien prévu</div>`; }
         }
-        initCalendar();
-        fetchWeather(); setInterval(fetchWeather, 1800000);
-        updateClock();
+        initCalendar(); fetchWeather(); setInterval(fetchWeather, 1800000); updateClock();
     </script>
 </body>
 </html>
